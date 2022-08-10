@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+
+//  в постман проверяется ид пользователя
 @Getter
 @Setter
 @AllArgsConstructor

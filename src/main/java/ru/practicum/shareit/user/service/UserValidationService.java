@@ -3,8 +3,8 @@ package ru.practicum.shareit.user.service;
 import lombok.AllArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.InvalidUserException;
-import ru.practicum.shareit.exception.UserNotFoundException;
+import ru.practicum.shareit.user.exception.InvalidUserException;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 
 @Service

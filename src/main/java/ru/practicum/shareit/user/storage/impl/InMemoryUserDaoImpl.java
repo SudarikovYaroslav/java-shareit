@@ -1,8 +1,8 @@
 package ru.practicum.shareit.user.storage.impl;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exception.EmailConflictException;
-import ru.practicum.shareit.exception.UserNotFoundException;
+import ru.practicum.shareit.user.exception.EmailConflictException;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.dao.UserDao;
 

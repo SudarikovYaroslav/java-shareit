@@ -2,53 +2,50 @@ package ru.practicum.shareit.item.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.service.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
 
-/**
- * // TODO .
- */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/items")
+@RequestMapping(path = "/items")
 public class ItemController {
 
     private final ItemService itemService;
-    private final ItemMapper itemMapper;
+    private final ItemMapper mapper;
 
     @PostMapping
-    public ItemDto createItem(@RequestBody ItemDto itemDto, @RequestHeader Long userId) {
-        Item item = itemMapper.convertItemDtoIntoItem(itemDto, userId);
-        return itemMapper.convertItemIntoItemDto(itemService.createItem(item));
+    public ItemDto createItem(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long userId) {
+        Item item = mapper.mapItemDtoToItem(itemDto, userId);
+        return mapper.mapItemToItemDto(itemService.createItem(item));
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestBody ItemDto itemDto,
                               @PathVariable long itemId,
-                              @RequestHeader long userId) {
-        Item item = itemMapper.convertItemDtoIntoItem(itemDto, userId);
+                              @RequestHeader("X-Sharer-User-Id") long userId) {
+        Item item = mapper.mapItemDtoToItem(itemDto, userId);
         item.setId(itemId);
-        return itemMapper.convertItemIntoItemDto(itemService.updateItem(item));
+        return mapper.mapItemToItemDto(itemService.updateItem(item));
     }
 
     @GetMapping("/{itemId}")
     public ItemDto findItemById(@PathVariable long itemId) {
-        return itemMapper.convertItemIntoItemDto(itemService.findItemById(itemId));
+        return mapper.mapItemToItemDto(itemService.findItemById(itemId));
     }
 
     @GetMapping
-    public List<ItemDto> findAllItems(@RequestHeader long userId) {
+    public List<ItemDto> findAllItems(@RequestHeader("X-Sharer-User-Id") long userId) {
         List<Item> userItems = itemService.findAllItems(userId);
-        return itemMapper.convertItemListToItemDtoList(userItems);
+        return mapper.mapItemListToItemDtoList(userItems);
     }
 
     @GetMapping("/search")
     public List<ItemDto> findItemsByRequest(@RequestParam String text) {
         List<Item> foundItems = itemService.findItemsByRequest(text);
-        return itemMapper.convertItemListToItemDtoList(foundItems);
+        return mapper.mapItemListToItemDtoList(foundItems);
     }
 }

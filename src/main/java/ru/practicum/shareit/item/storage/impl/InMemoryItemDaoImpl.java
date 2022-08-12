@@ -73,7 +73,8 @@ public class InMemoryItemDaoImpl implements ItemDao {
             String itemName = item.getName().toLowerCase();
             String itemDescription = item.getDescription().toLowerCase();
 
-            if (itemName.contains(wantedItem) || itemDescription.contains(wantedItem)) {
+            if ((itemName.contains(wantedItem) || itemDescription.contains(wantedItem))
+                    && item.getAvailable().equals(true)) {
                 result.add(item);
             }
         }

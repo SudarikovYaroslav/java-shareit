@@ -14,31 +14,33 @@ import java.util.List;
 @RequestMapping(path = "/items")
 public class ItemController {
 
+    public static final String USER_ID_HEADER = "X-Sharer-User-Id";
+
     private final ItemService itemService;
     private final ItemMapper mapper;
 
     @PostMapping
-    public ItemDto createItem(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long userId) {
-        Item item = mapper.mapItemDtoToItem(itemDto, userId);
-        return mapper.mapItemToItemDto(itemService.createItem(item));
+    public ItemDto createItem(@RequestBody ItemDto itemDto, @RequestHeader(USER_ID_HEADER) Long userId) {
+        Item item = mapper.toModel(itemDto, userId);
+        return mapper.toDto(itemService.createItem(item));
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestBody ItemDto itemDto,
                               @PathVariable long itemId,
-                              @RequestHeader("X-Sharer-User-Id") long userId) {
-        Item item = mapper.mapItemDtoToItem(itemDto, userId);
+                              @RequestHeader(USER_ID_HEADER) long userId) {
+        Item item = mapper.toModel(itemDto, userId);
         item.setId(itemId);
-        return mapper.mapItemToItemDto(itemService.updateItem(item));
+        return mapper.toDto(itemService.updateItem(item));
     }
 
     @GetMapping("/{itemId}")
     public ItemDto findItemById(@PathVariable long itemId) {
-        return mapper.mapItemToItemDto(itemService.findItemById(itemId));
+        return mapper.toDto(itemService.findItemById(itemId));
     }
 
     @GetMapping
-    public List<ItemDto> findAllItems(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public List<ItemDto> findAllItems(@RequestHeader(USER_ID_HEADER) long userId) {
         List<Item> userItems = itemService.findAllItems(userId);
         return mapper.mapItemListToItemDtoList(userItems);
     }

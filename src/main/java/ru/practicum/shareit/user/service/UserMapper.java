@@ -9,20 +9,19 @@ import java.util.List;
 
 @Service
 public class UserMapper {
-    public static final Long NULL_USER_ID = null;
 
-    public UserDto mapUserToUserDto(User user) {
+    public UserDto toDto(User user) {
         return new UserDto(user.getId(), user.getName(), user.getEmail());
     }
 
-    public User mapUserDtoToUser(UserDto userDto) {
-        return new User(NULL_USER_ID, userDto.getName(), userDto.getName());
+    public User toModel(UserDto userDto, Long userId) {
+        return new User(userId, userDto.getName(), userDto.getName());
     }
 
     public List<UserDto> mapUserListToUserDtoList(List<User> users) {
         List<UserDto> result = new ArrayList<>();
         for (User user : users) {
-            result.add(mapUserToUserDto(user));
+            result.add(toDto(user));
         }
         return result;
     }

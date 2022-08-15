@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserById(long userId) {
         validationService.validateUserId(userId);
-        return userDao.findUserByID(userId);
+        return userDao.findUserById(userId);
     }
 
     @Override

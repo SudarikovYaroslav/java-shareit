@@ -9,7 +9,7 @@ public interface UserDao {
 
     User updateUser(long userId, User user);
 
-    User findUserByID(long userId);
+    User findUserById(long userId);
 
     void deleteUserById(long userId);
 

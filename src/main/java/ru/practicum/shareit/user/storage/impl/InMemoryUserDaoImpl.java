@@ -47,7 +47,7 @@ public class InMemoryUserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findUserByID(long userId) {
+    public User findUserById(long userId) {
         if (!users.containsKey(userId)) throw new UserNotFoundException(USER_NOT_FOUND_MESSAGE + userId);
         return users.get(userId);
     }

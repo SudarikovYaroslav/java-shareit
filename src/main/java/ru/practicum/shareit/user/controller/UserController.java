@@ -18,7 +18,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserDto createUser(@RequestBody User user) {
+    public UserDto createUser(@RequestBody UserDto userDto) {
+        User user = mapper.toModel(userDto, null);
         return mapper.toDto(userService.createUser(user));
     }
 
@@ -33,7 +34,8 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@PathVariable long userId, @RequestBody User user) {
+    public UserDto updateUser(@PathVariable long userId, @RequestBody UserDto userDto) {
+        User user = mapper.toModel(userDto, userId);
         return mapper.toDto(userService.updateUser(userId, user));
     }
 

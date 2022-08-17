@@ -24,7 +24,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item createItem(Item item) {
-        boolean ownerExists = checkIsOwnerExists(item.getOwner());
+        boolean ownerExists = checkOwnerExists(item.getOwner());
         if (!ownerExists) {
             throw new OwnerNotFoundException(OWNER_NOT_FOUND_MESSAGE + item.getOwner());
         }
@@ -54,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
         return itemDao.findItemsByRequest(text);
     }
 
-    private boolean checkIsOwnerExists(long ownerId) {
+    private boolean checkOwnerExists(long ownerId) {
         List<User> users = userDao.findAllUsers();
         List<User> result = users.stream().filter(user -> user.getId() == ownerId).collect(Collectors.toList());
         return result.size() > 0;

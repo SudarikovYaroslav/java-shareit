@@ -5,10 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -26,6 +25,7 @@ public class Booking {
 
     @Id
     @Column(name = ID_COLUMN_NAME)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = START_COLUMN_NAME, nullable = false)
     private LocalDateTime start;
@@ -36,5 +36,25 @@ public class Booking {
     @Column(name = BOOKER_COLUMN_NAME, nullable = false)
     private Long booker;
     @Column(name = STATUS_COLUMN_NAME, nullable = false, length = MAX_STATUS_LENGTH)
+    @Enumerated(EnumType.STRING)
     private BookingStatus status;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        return id != null
+                && Objects.equals(id, booking.id)
+                && Objects.equals(start, booking.start)
+                && Objects.equals(end, booking.end)
+                && Objects.equals(item, booking.item)
+                && Objects.equals(booker, booking.booker)
+                && status == booking.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, start, end, item, booker, status);
+    }
 }

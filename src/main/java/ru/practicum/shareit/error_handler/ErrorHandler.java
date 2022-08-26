@@ -5,10 +5,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.item.exception.DeniedAccessException;
-import ru.practicum.shareit.item.exception.OwnerNotFoundException;
-import ru.practicum.shareit.user.exception.EmailConflictException;
-import ru.practicum.shareit.user.exception.UserNotFoundException;
+import ru.practicum.shareit.exceptions.DeniedAccessException;
+import ru.practicum.shareit.exceptions.OwnerNotFoundException;
+import ru.practicum.shareit.exceptions.EmailConflictException;
+import ru.practicum.shareit.exceptions.UserNotFoundException;
+
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -16,30 +18,36 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handle(EmailConflictException e) {
-        return new ErrorResponse("Адрес почты уже используется", e.getMessage());
+        return new ErrorResponse("Адрес почты уже используется ", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handle(UserNotFoundException e) {
-        return new ErrorResponse("Недопустимое значение id", e.getMessage());
+        return new ErrorResponse("Недопустимое значение id ", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handle(OwnerNotFoundException e) {
-        return new ErrorResponse("Не найден владелец вещи", e.getMessage());
+        return new ErrorResponse("Не найден владелец вещи ", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handle(DeniedAccessException e) {
-        return new ErrorResponse("Отказано в доступе", e.getMessage());
+        return new ErrorResponse("Отказано в доступе ", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handle(MethodArgumentNotValidException e) {
-        return new ErrorResponse("Ошибка валидации 400:", e.getMessage());
+        return new ErrorResponse("Ошибка валидации 400: ", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handle(NoSuchElementException e) {
+        return new ErrorResponse("Ошибка поиска элемента 404: ", e.getMessage());
     }
 }

@@ -14,14 +14,12 @@ public class BookingController {
 
     public static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
-    private BookingMapper bookingMapper;
     private BookingService bookingService;
 
     @PostMapping
-    public BookingPostDto createBooking(@RequestBody @Validated(Create.class) BookingPostDto bookingPostDto,
+    public BookingPostDto createBooking(@RequestBody @Validated(Create.class) BookingPostDto dto,
                                         @RequestHeader(USER_ID_HEADER) Long userId) {
-        Booking booking = bookingMapper.toModel(bookingPostDto, userId);
-        return bookingMapper.toPostDto(bookingService.createBooking(booking, userId));
+        return bookingService.createBooking(dto, userId);
     }
 
     @PatchMapping("/{bookingId}")

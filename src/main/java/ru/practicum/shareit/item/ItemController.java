@@ -21,7 +21,6 @@ public class ItemController {
     public static final String NULL_USER_ID_MESSAGE = "userID is null";
 
     private final ItemService itemService;
-    private final ItemMapper mapper;
 
     @PostMapping
     public ItemDto createItem(@Validated({Create.class})
@@ -29,8 +28,7 @@ public class ItemController {
                               @NotNull(message = (NULL_ITEM_ID_MESSAGE))
                               @Min(MIN_ID_VALUE)
                               @RequestHeader(USER_ID_HEADER) Long userId) {
-        Item item = mapper.toModel(itemDto, userId);
-        return mapper.toDto(itemService.createItem(item));
+        return itemService.createItem(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
@@ -42,29 +40,25 @@ public class ItemController {
                               @NotNull(message = NULL_USER_ID_MESSAGE)
                               @Min(MIN_ID_VALUE)
                               @RequestHeader(USER_ID_HEADER) Long userId) {
-        Item item = mapper.toModel(itemDto, userId);
-        item.setId(itemId);
-        return mapper.toDto(itemService.updateItem(item));
+        return itemService.updateItem(itemDto, itemId, userId);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto findItemById(@NotNull(message = NULL_ITEM_ID_MESSAGE)
                                 @Min(MIN_ID_VALUE)
                                 @PathVariable Long itemId) {
-        return mapper.toDto(itemService.findItemById(itemId));
+        return itemService.findItemById(itemId);
     }
 
     @GetMapping
     public List<ItemDto> findAllItems(@NotNull(message = NULL_USER_ID_MESSAGE)
                                       @Min(MIN_ID_VALUE)
                                       @RequestHeader(USER_ID_HEADER) Long userId) {
-        List<Item> userItems = itemService.findAllItems(userId);
-        return mapper.mapItemListToItemDtoList(userItems);
+        return itemService.findAllItems(userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> findItemsByRequest(@RequestParam String text) {
-        List<Item> foundItems = itemService.findItemsByRequest(text);
-        return mapper.mapItemListToItemDtoList(foundItems);
+        return itemService.findItemsByRequest(text);
     }
 }

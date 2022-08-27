@@ -18,25 +18,23 @@ public class UserController {
     public static final int MIN_ID_VALUE = 1;
     public static final String NULL_USER_ID_MESSAGE = "userID is null";
 
-    private final UserMapper mapper;
     private final UserService userService;
 
     @PostMapping
     public UserDto createUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
-        User user = mapper.toModel(userDto, null);
-        return mapper.toDto(userService.createUser(user));
+        return userService.createUser(userDto);
     }
 
     @GetMapping("/{userId}")
     public UserDto findUserById(@NotNull(message = (NULL_USER_ID_MESSAGE))
                                 @Min(MIN_ID_VALUE)
                                 @PathVariable Long userId) {
-        return mapper.toDto(userService.findUserById(userId));
+        return userService.findUserById(userId);
     }
 
     @GetMapping
     public List<UserDto> findAllUsers() {
-        return mapper.mapUserListToUserDtoList(userService.findAllUsers());
+        return userService.findAllUsers();
     }
 
     @PatchMapping("/{userId}")
@@ -45,8 +43,7 @@ public class UserController {
                               @PathVariable Long userId,
                               @Validated({Update.class})
                               @RequestBody UserDto userDto) {
-        User user = mapper.toModel(userDto, userId);
-        return mapper.toDto(userService.updateUser(userId, user));
+        return userService.updateUser(userId, userDto);
     }
 
     @DeleteMapping("/{userId}")

@@ -9,21 +9,24 @@ import java.util.List;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final UserMapper mapper;
     private UserRepository userRepository;
 
     @Override
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public UserDto createUser(UserDto userDto) {
+        User user = mapper.toModel(userDto, null);
+        return mapper.toDto(userRepository.save(user));
     }
 
     @Override
-    public User updateUser(long userId, User user) {
-        return userRepository.save(patchUser(findUserById(userId), user));
+    public UserDto updateUser(long userId, UserDto userDto) {
+        User user = patchUser(userId, userDto);
+        return mapper.toDto(userRepository.save(user));
     }
 
     @Override
-    public User findUserById(long userId) {
-        return userRepository.findById(userId).orElseThrow();
+    public UserDto findUserById(long userId) {
+        return mapper.toDto(userRepository.findById(userId).orElseThrow());
     }
 
     @Override
@@ -32,11 +35,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> findAllUsers() {
+        return mapper.mapUserListToUserDtoList(userRepository.findAll());
     }
 
-    private User patchUser(User entry, User patch) {
+    private User patchUser(Long userId, UserDto patch) {
+        UserDto entry = findUserById(userId);
         String name = patch.getName();
         if (name != null && !name.isBlank()) {
             entry.setName(name);
@@ -47,37 +51,6 @@ public class UserServiceImpl implements UserService {
         if (newEmail != null && !newEmail.isBlank() && !oldEmail.equals(newEmail)) {
             entry.setEmail(newEmail);
         }
-        return entry;
+        return mapper.toModel(entry, userId);
     }
 }
-
-/*
-*  @Override
-    public User updateUser(long userId, User user) {
-        if (!users.containsKey(userId)) {
-            throw new UserNotFoundException(USER_NOT_FOUND_MESSAGE + userId);
-        }
-        User oldEntry = users.get(userId);
-
-        if (user.getName() != null) {
-            oldEntry.setName(user.getName());
-        }
-
-        String oldEmail = users.get(userId).getEmail();
-        String newEmail = user.getEmail();
-        if (newEmail != null && !oldEmail.equals(newEmail)) {
-            tryRefreshUserEmail(oldEmail, newEmail);
-            oldEntry.setEmail(newEmail);
-        }
-        return oldEntry;
-    }
-    *
-    * private void tryRefreshUserEmail(String oldEmail, String newEmail) {
-        emails.remove(oldEmail);
-        if (emails.contains(newEmail)) {
-            emails.add(oldEmail);
-            throw new EmailConflictException(EMAIL_CONFLICT_MESSAGE + newEmail);
-        }
-        emails.add(newEmail);
-    }
-* */

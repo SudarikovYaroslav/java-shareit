@@ -19,41 +19,47 @@ public class ItemServiceImpl implements ItemService {
     public static final String OWNER_NOT_FOUND_MESSAGE = "Не найден владелец c id: ";
     public static final String DENIED_ACCESS_MESSAGE = "Пользователь не является владельцем вещи";
 
+    private final ItemMapper mapper;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
     @Override
-    public Item createItem(Item item) {
+    public ItemDto createItem(ItemDto itemDto, Long userId) {
+        Item item = mapper.toModel(itemDto, userId);
         boolean ownerExists = isOwnerExists(item.getOwner());
         if (!ownerExists) {
             throw new OwnerNotFoundException(OWNER_NOT_FOUND_MESSAGE + item.getOwner());
         }
-        return itemRepository.save(item);
+        return mapper.toDto(itemRepository.save(item));
     }
 
     @Override
-    public Item updateItem(Item item) {
-        return itemRepository.save(refreshItem(item));
+    public ItemDto updateItem(ItemDto itemDto, Long itemId, Long userId) {
+        Item item = mapper.toModel(itemDto, userId);
+        item.setId(itemId);
+        return mapper.toDto(itemRepository.save(refreshItem(item)));
     }
 
     @Override
-    public Item findItemById(Long itemId) {
-        return itemRepository.findById(itemId).orElseThrow();
+    public ItemDto findItemById(Long itemId) {
+        return mapper.toDto(itemRepository.findById(itemId).orElseThrow());
     }
 
     @Override
-    public List<Item> findAllItems(Long userId) {
-        return itemRepository.findAll()
+    public List<ItemDto> findAllItems(Long userId) {
+        List<Item> userItems = itemRepository.findAll()
                 .stream().filter(item -> item.getOwner().equals(userId))
                 .collect(Collectors.toList());
+        return mapper.mapItemListToItemDtoList(userItems);
     }
 
     @Override
-    public List<Item> findItemsByRequest(String text) {
+    public List<ItemDto> findItemsByRequest(String text) {
         if (text == null || text.isBlank() || text.length() <= MIN_SEARCH_REQUEST_LENGTH) {
             return new ArrayList<>();
         }
-        return itemRepository.search(text);
+        List<Item> foundItems = itemRepository.search(text);
+        return mapper.mapItemListToItemDtoList(foundItems);
     }
 
     private boolean isOwnerExists(long ownerId) {

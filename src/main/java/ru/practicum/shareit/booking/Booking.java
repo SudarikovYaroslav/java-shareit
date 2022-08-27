@@ -16,12 +16,12 @@ import java.util.Objects;
 @Entity(name = "bookings")
 public class Booking {
     public static final int MAX_STATUS_LENGTH = 64;
-    public static final String END_COLUMN_NAME = "end_time";
     public static final String ITEM_COLUMN_NAME = "item";
-    public static final String START_COLUMN_NAME = "start_time";
+    public static final String END_COLUMN_NAME = "end_time";
     public static final String ID_COLUMN_NAME = "booking_id";
     public static final String BOOKER_COLUMN_NAME = "booker";
     public static final String STATUS_COLUMN_NAME = "status";
+    public static final String START_COLUMN_NAME = "start_time";
 
     @Id
     @Column(name = ID_COLUMN_NAME)

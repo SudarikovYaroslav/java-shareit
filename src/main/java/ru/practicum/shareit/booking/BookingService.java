@@ -2,5 +2,5 @@ package ru.practicum.shareit.booking;
 
 public interface BookingService {
 
-    Booking createBooking(Booking booking, Long userId);
+    BookingPostDto createBooking(BookingPostDto dto, Long userId);
 }

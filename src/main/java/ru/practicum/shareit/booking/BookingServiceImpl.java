@@ -7,21 +7,22 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
 
-import java.time.LocalDateTime;
-
 @Service
 @AllArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
-    public static final String UNAVAILABLE_BOOKING_MESSAGE = "в данный момент невозможно забронировать item: ";
     public static final String BOOKING_INVALID_MESSAGE = "недопустимые значения времени бронирования: ";
+    public static final String UNAVAILABLE_BOOKING_MESSAGE = "в данный момент невозможно забронировать item: ";
 
-    private final BookingRepository bookingRepository;
+    private final BookingMapper mapper;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
-    public Booking createBooking(Booking booking, Long userId) {
+    public BookingPostDto createBooking(BookingPostDto dto, Long userId) {
+        Booking booking = mapper.toModel(dto, userId);
+
         userRepository.findById(userId).orElseThrow();
         Item item = itemRepository.findById(booking.getItem()).orElseThrow();
         if (!item.getAvailable()) {
@@ -32,20 +33,10 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalArgumentException(BOOKING_INVALID_MESSAGE +
                     "start: " + booking.getStart() + " end: " + booking.getEnd() + " now: ");
         }
-        return bookingRepository.save(booking);
+        return mapper.toPostDto(bookingRepository.save(booking));
     }
 
     private boolean isStartBeforeEnd(Booking booking) {
         return booking.getStart().isBefore(booking.getEnd());
     }
 }
-
-
-/*
-* private boolean isStartBeforeEnd(Booking booking) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime start = booking.getStart();
-        LocalDateTime end = booking.getEnd();
-        return !end.isBefore(now) && !end.isBefore(start) && !start.isBefore(now);
-    }
-* */

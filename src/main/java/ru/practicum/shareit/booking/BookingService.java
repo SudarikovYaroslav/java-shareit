@@ -5,6 +5,8 @@ import ru.practicum.shareit.booking.dto.BookingPostDto;
 import ru.practicum.shareit.booking.dto.BookingPostResponseDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 
+import java.util.List;
+
 public interface BookingService {
 
     BookingPostResponseDto createBooking(BookingPostDto dto, Long userId);
@@ -12,4 +14,6 @@ public interface BookingService {
     BookingResponseDto patchBooking(Long bookingId, Boolean approved, Long userId);
 
     BookingDetailedDto findById(Long bookingId, Long userId);
+
+    List<BookingDetailedDto> findAllBookings(State state, Long userId);
 }

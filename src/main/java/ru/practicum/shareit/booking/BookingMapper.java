@@ -8,6 +8,9 @@ import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class BookingMapper {
     public Booking toModel(BookingPostDto dto, Item item, User user) {
@@ -39,15 +42,19 @@ public class BookingMapper {
         return dto;
     }
 
-    public BookingDetailedDto toDetailedDto(Booking booking, User booker, Item item) {
+    public BookingDetailedDto toDetailedDto(Booking booking) {
         BookingDetailedDto dto = new BookingDetailedDto();
         dto.setId(booking.getId());
         dto.setStart(booking.getStart());
         dto.setEnd(booking.getEnd());
         dto.setStatus(booking.getStatus());
-        dto.setBooker(booker);
-        dto.setItem(item);
-        dto.setName(item.getName());
+        dto.setBooker(booking.getBooker());
+        dto.setItem(booking.getItem());
+        dto.setName(booking.getItem().getName());
         return dto;
+    }
+
+    public List<BookingDetailedDto> toListDetailedDto(List<Booking> bookings) {
+        return bookings.stream().map(this::toDetailedDto).collect(Collectors.toList());
     }
 }

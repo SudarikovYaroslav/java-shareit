@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping(path = "/bookings")
 public class BookingController {
 
+    public static final String DEFAULT_STATE_VALUE = "ALL";
     public static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     private BookingService bookingService;
@@ -25,7 +26,7 @@ public class BookingController {
                                                 @RequestHeader(USER_ID_HEADER) Long userId) {
         return bookingService.createBooking(dto, userId);
     }
-    
+
     @PatchMapping("/{bookingId}")
     public BookingResponseDto patchBooking(@PathVariable Long bookingId,
                                            @RequestParam Boolean approved,
@@ -33,18 +34,16 @@ public class BookingController {
         return bookingService.patchBooking(bookingId, approved, userId);
     }
 
-    //TODO Работает, но не проходит тест - разница в секундах start. Ошибка при записи?? Но тесты при сохранении проходят
     @GetMapping("/{bookingId}")
     public BookingDetailedDto findById(@PathVariable Long bookingId,
                                        @RequestHeader(USER_ID_HEADER) Long userId) {
         return bookingService.findById(bookingId, userId);
     }
-
-    // Получение списка всех бронирований ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ
+    
     @GetMapping
-    public List<BookingPostResponseDto> findAllBookings(@RequestParam State state,
-                                                        @RequestHeader(USER_ID_HEADER) Long userId) {
-        return null;
+    public List<BookingDetailedDto> findAllBookings(@RequestParam(defaultValue = DEFAULT_STATE_VALUE) State state,
+                                                    @RequestHeader(USER_ID_HEADER) Long userId) {
+        return bookingService.findAllBookings(state, userId);
     }
 
     //Получение списка бронирований для всех вещей текущего пользователя.

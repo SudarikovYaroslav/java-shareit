@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingPostDto;
 import ru.practicum.shareit.booking.dto.BookingPostResponseDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.exceptions.DeniedAccessException;
+import ru.practicum.shareit.exceptions.InvalidBookingException;
 import ru.practicum.shareit.exceptions.UnavailableBookingException;
 import ru.practicum.shareit.exceptions.UnsupportedStatusException;
 import ru.practicum.shareit.item.Item;
@@ -31,10 +32,12 @@ public class BookingServiceImpl implements BookingService {
     public static final String CURRENT = "CURRENT";
     public static final String REJECTED = "REJECTED";
     public static final String ILLEGAL_SATE_MESSAGE = "  state: ";
+    public static final String SATE_ALREADY_SET_MESSAGE = "статус уже выставлен state: ";
     public static final String BOOKING_INVALID_MESSAGE = "недопустимые значения времени бронирования: ";
     public static final String UNAVAILABLE_BOOKING_MESSAGE = "в данный момент невозможно забронировать item: ";
-    public static final String DENIED_PATCH_ACCESS_MESSAGE = "Пользователь не является владельцем вещи userId: ";
-    public static final String DENIED_ACCESS_MESSAGE = "Пользователь не является владельцем вещи или брони userId: ";
+    public static final String DENIED_PATCH_ACCESS_MESSAGE = "пользователь не является владельцем вещи userId: ";
+    public static final String DENIED_ACCESS_MESSAGE = "пользователь не является владельцем вещи или брони userId: ";
+    public static final String INVALID_BUCKING = "нельзя забронировать свою же вещь";
 
     private final BookingMapper mapper;
     private final UserRepository userRepository;
@@ -50,6 +53,10 @@ public class BookingServiceImpl implements BookingService {
 
         User user = userRepository.findById(userId).orElseThrow();
         Item item = itemRepository.findById(dto.getItemId()).orElseThrow();
+
+        if (userId.equals(item.getOwner())) {
+            throw new InvalidBookingException(INVALID_BUCKING);
+        }
 
         if (!item.getAvailable()) {
             throw new UnavailableBookingException(UNAVAILABLE_BOOKING_MESSAGE + item.getId());
@@ -67,7 +74,13 @@ public class BookingServiceImpl implements BookingService {
         if (!item.getOwner().equals(userId)) {
             throw new NoSuchElementException(DENIED_PATCH_ACCESS_MESSAGE + userId + " itemId: " + item.getId());
         }
-        booking.setStatus(detectStatus(approved));
+        BookingStatus status = detectStatus(approved);
+
+        if (booking.getStatus().equals(status)) {
+            throw new IllegalArgumentException(SATE_ALREADY_SET_MESSAGE + status);
+        }
+
+        booking.setStatus(status);
         return mapper.toResponseDto(bookingRepository.save(booking), booking.getBooker(), item);
     }
 

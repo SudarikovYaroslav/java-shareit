@@ -57,12 +57,18 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handle(IllegalArgumentException e) {
-        return new ErrorResponse("передано недопустимое значение 400: ", e.getMessage());
+        return new ErrorResponse("Передано недопустимое значение 400: ", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handle(UnsupportedStatusException e) {
         return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handle(InvalidBookingException e) {
+        return new ErrorResponse("недопустимое бронирование 404: ", e.getMessage());
     }
 }

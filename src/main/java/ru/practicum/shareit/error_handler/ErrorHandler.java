@@ -59,4 +59,10 @@ public class ErrorHandler {
     public ErrorResponse handle(IllegalArgumentException e) {
         return new ErrorResponse("передано недопустимое значение 400: ", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handle(UnsupportedStatusException e) {
+        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS", e.getMessage());
+    }
 }

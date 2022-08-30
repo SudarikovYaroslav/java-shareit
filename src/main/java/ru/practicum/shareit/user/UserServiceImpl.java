@@ -9,24 +9,23 @@ import java.util.List;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserMapper mapper;
     private UserRepository userRepository;
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        User user = mapper.toModel(userDto, null);
-        return mapper.toDto(userRepository.save(user));
+        User user = UserMapper.toModel(userDto, null);
+        return UserMapper.toDto(userRepository.save(user));
     }
 
     @Override
     public UserDto updateUser(long userId, UserDto userDto) {
         User user = patchUser(userId, userDto);
-        return mapper.toDto(userRepository.save(user));
+        return UserMapper.toDto(userRepository.save(user));
     }
 
     @Override
     public UserDto findUserById(long userId) {
-        return mapper.toDto(userRepository.findById(userId).orElseThrow());
+        return UserMapper.toDto(userRepository.findById(userId).orElseThrow());
     }
 
     @Override
@@ -36,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAllUsers() {
-        return mapper.mapUserListToUserDtoList(userRepository.findAll());
+        return UserMapper.mapUserListToUserDtoList(userRepository.findAll());
     }
 
     private User patchUser(Long userId, UserDto patch) {
@@ -51,6 +50,6 @@ public class UserServiceImpl implements UserService {
         if (newEmail != null && !newEmail.isBlank() && !oldEmail.equals(newEmail)) {
             entry.setEmail(newEmail);
         }
-        return mapper.toModel(entry, userId);
+        return UserMapper.toModel(entry, userId);
     }
 }

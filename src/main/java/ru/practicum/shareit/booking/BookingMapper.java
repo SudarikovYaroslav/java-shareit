@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking;
 
-import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.*;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
@@ -8,9 +7,8 @@ import ru.practicum.shareit.user.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 public class BookingMapper {
-    public Booking toModel(BookingPostDto dto, Item item, User user) {
+    public static Booking toModel(BookingPostDto dto, Item item, User user) {
         Booking booking = new Booking();
         booking.setStart(dto.getStart());
         booking.setEnd(dto.getEnd());
@@ -20,7 +18,7 @@ public class BookingMapper {
         return booking;
     }
 
-    public BookingPostResponseDto toPostResponseDto(Booking booking, Item item) {
+    public static BookingPostResponseDto toPostResponseDto(Booking booking, Item item) {
         BookingPostResponseDto dto = new BookingPostResponseDto();
         dto.setId(booking.getId());
         dto.setItem(item);
@@ -29,7 +27,7 @@ public class BookingMapper {
         return dto;
     }
 
-    public BookingResponseDto toResponseDto(Booking booking, User booker, Item item) {
+    public static BookingResponseDto toResponseDto(Booking booking, User booker, Item item) {
         BookingResponseDto dto = new BookingResponseDto();
         dto.setId(booking.getId());
         dto.setStatus(booking.getStatus());
@@ -39,7 +37,7 @@ public class BookingMapper {
         return dto;
     }
 
-    public BookingDetailedDto toDetailedDto(Booking booking) {
+    public static BookingDetailedDto toDetailedDto(Booking booking) {
         BookingDetailedDto dto = new BookingDetailedDto();
         dto.setId(booking.getId());
         dto.setStart(booking.getStart());
@@ -51,7 +49,7 @@ public class BookingMapper {
         return dto;
     }
 
-    public BookingInItemDto bookingInItemDto(Booking booking) {
+    public static BookingInItemDto bookingInItemDto(Booking booking) {
         if (booking == null) return null;
 
         BookingInItemDto dto = new BookingInItemDto();
@@ -62,7 +60,7 @@ public class BookingMapper {
         return dto;
     }
 
-    public List<BookingDetailedDto> toListDetailedDto(List<Booking> bookings) {
-        return bookings.stream().map(this::toDetailedDto).collect(Collectors.toList());
+    public static List<BookingDetailedDto> toListDetailedDto(List<Booking> bookings) {
+        return bookings.stream().map(BookingMapper::toDetailedDto).collect(Collectors.toList());
     }
 }

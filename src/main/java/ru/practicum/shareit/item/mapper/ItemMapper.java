@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.mapper;
 
-import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingInItemDto;
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.Item;
@@ -8,9 +9,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.List;
 
-@Service
 public class ItemMapper {
-    public ItemDto toDto(Item item, List<Comment> comments) {
+    public static ItemDto toDto(Item item, List<Comment> comments) {
         ItemDto dto = new ItemDto();
         dto.setId(item.getId());
         dto.setName(item.getName());
@@ -22,24 +22,24 @@ public class ItemMapper {
         return dto;
     }
 
-    public ItemDto toDto(Item item,
-                         BookingInItemDto lastBooking,
-                         BookingInItemDto nextBooking,
+    public static ItemDto toDto(Item item,
+                         Booking lastBooking,
+                         Booking nextBooking,
                          List<Comment> comments) {
         ItemDto dto = new ItemDto();
         dto.setId(item.getId());
         dto.setName(item.getName());
         dto.setDescription(item.getDescription());
         dto.setAvailable(item.getAvailable());
-        dto.setLastBooking(lastBooking);
-        dto.setNextBooking(nextBooking);
+        dto.setLastBooking(BookingMapper.bookingInItemDto(lastBooking));
+        dto.setNextBooking(BookingMapper.bookingInItemDto(nextBooking));
         if (comments != null) {
             dto.setComments(CommentMapper.toCommentDetailedDtoList(comments));
         }
         return dto;
     }
 
-    public Item toModel(ItemDto itemDto, Long ownerId) {
+    public static Item toModel(ItemDto itemDto, Long ownerId) {
         return new Item(null, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(), ownerId);
     }
 }

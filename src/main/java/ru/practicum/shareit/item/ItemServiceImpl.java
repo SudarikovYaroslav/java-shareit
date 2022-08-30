@@ -36,8 +36,6 @@ public class ItemServiceImpl implements ItemService {
     public static final String COMMENT_EXCEPTION_MESSAGE = "Нельзя оставить комментарий на вещь, " +
             "который вы не пользовались или ещё не закончился срок аренды";
 
-    private final ItemMapper itemMapper;
-    private final BookingMapper bookingMapper;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
@@ -45,12 +43,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(ItemDto itemDto, Long userId) {
-        Item item = itemMapper.toModel(itemDto, userId);
+        Item item = ItemMapper.toModel(itemDto, userId);
         boolean ownerExists = isOwnerExists(item.getOwner());
         if (!ownerExists) {
             throw new OwnerNotFoundException(OWNER_NOT_FOUND_MESSAGE + item.getOwner());
         }
-        return itemMapper.toDto(itemRepository.save(item), null);
+        return ItemMapper.toDto(itemRepository.save(item), null);
     }
 
     @Override
@@ -68,10 +66,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(ItemDto itemDto, Long itemId, Long userId) {
-        Item item = itemMapper.toModel(itemDto, userId);
+        Item item = ItemMapper.toModel(itemDto, userId);
         item.setId(itemId);
         List<Comment> comments = commentRepository.findByItem_Id(itemId);
-        return itemMapper.toDto(itemRepository.save(refreshItem(item)), comments);
+        return ItemMapper.toDto(itemRepository.save(refreshItem(item)), comments);
     }
 
     @Override
@@ -84,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
             Sort sortDesc = Sort.by("start").descending();
             return constructItemDtoForOwner(item, now, sortDesc, comments);
         }
-        return itemMapper.toDto(item, null, null, comments);
+        return ItemMapper.toDto(item, null, null, comments);
     }
 
     @Override
@@ -159,7 +157,7 @@ public class ItemServiceImpl implements ItemService {
                 ItemDto dto = constructItemDtoForOwner(item, now, sortDesc, comments);
                 targetList.add(dto);
             } else {
-                targetList.add(itemMapper.toDto(item,comments));
+                targetList.add(ItemMapper.toDto(item,comments));
             }
         }
     }
@@ -170,9 +168,9 @@ public class ItemServiceImpl implements ItemService {
         Booking nextBooking = bookingRepository.findBookingByItem_IdAndStartAfter(item.getId(), now, sort)
                 .stream().findFirst().orElse(null);
 
-        return itemMapper.toDto(item,
-                bookingMapper.bookingInItemDto(lastBooking),
-                bookingMapper.bookingInItemDto(nextBooking),
+        return ItemMapper.toDto(item,
+                lastBooking,
+                nextBooking,
                 comments);
     }
 }

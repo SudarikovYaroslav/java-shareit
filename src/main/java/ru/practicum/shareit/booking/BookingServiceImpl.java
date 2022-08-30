@@ -31,7 +31,6 @@ public class BookingServiceImpl implements BookingService {
     public static final String DENIED_ACCESS_MESSAGE = "пользователь не является владельцем вещи или брони userId: ";
     public static final String INVALID_BUCKING = "нельзя забронировать свою же вещь";
 
-    private final BookingMapper mapper;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
@@ -54,8 +53,8 @@ public class BookingServiceImpl implements BookingService {
             throw new UnavailableBookingException(UNAVAILABLE_BOOKING_MESSAGE + item.getId());
         }
 
-        Booking booking = mapper.toModel(dto, item, user);
-        return mapper.toPostResponseDto(bookingRepository.save(booking), item);
+        Booking booking = BookingMapper.toModel(dto, item, user);
+        return BookingMapper.toPostResponseDto(bookingRepository.save(booking), item);
     }
 
     @Override
@@ -73,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         booking.setStatus(status);
-        return mapper.toResponseDto(bookingRepository.save(booking), booking.getBooker(), item);
+        return BookingMapper.toResponseDto(bookingRepository.save(booking), booking.getBooker(), item);
     }
 
     @Override
@@ -87,7 +86,7 @@ public class BookingServiceImpl implements BookingService {
         if (!itemOrBookingOwner) {
             throw new NoSuchElementException(DENIED_ACCESS_MESSAGE + userId);
         }
-        return mapper.toDetailedDto(booking);
+        return BookingMapper.toDetailedDto(booking);
     }
 
     @Override
@@ -113,7 +112,7 @@ public class BookingServiceImpl implements BookingService {
 
             default -> throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);
         }
-        return mapper.toListDetailedDto(bookings);
+        return BookingMapper.toListDetailedDto(bookings);
     }
 
     @Override
@@ -140,7 +139,7 @@ public class BookingServiceImpl implements BookingService {
 
             default -> throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);
         }
-        return mapper.toListDetailedDto(bookings);
+        return BookingMapper.toListDetailedDto(bookings);
     }
 
     private void checkIfUserExists(Long userId) {

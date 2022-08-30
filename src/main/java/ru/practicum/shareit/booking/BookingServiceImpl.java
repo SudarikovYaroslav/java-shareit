@@ -91,7 +91,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDetailedDto> findAllBookings(String state, Long userId) {
+    public List<BookingDetailedDto> findAllByBooker(String state, Long userId) {
         State status = tryDetectState(state);
         checkIfUserExists(userId);
         LocalDateTime now = LocalDateTime.now();
@@ -103,8 +103,8 @@ public class BookingServiceImpl implements BookingService {
                     .findByBooker_IdAndStatus(userId, BookingStatus.REJECTED, sort);
             case WAITING -> bookings = bookingRepository
                     .findByBooker_IdAndStatus(userId, BookingStatus.WAITING, sort);
-            case CURRENT -> bookings = bookingRepository
-                    .findByBooker_IdAndStatus(userId, BookingStatus.APPROVED, sort);
+            case CURRENT -> bookings = bookingRepository.findByBookerIdCurrent(userId, now);
+//                    .findByBooker_IdAndStatus(userId, BookingStatus.APPROVED, sort);
             case FUTURE -> bookings = bookingRepository
                         .findByBooker_IdAndStartIsAfter(userId, now, sort);
             case PAST -> bookings = bookingRepository
@@ -117,7 +117,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDetailedDto> findAll(String state, Long userId) {
+    public List<BookingDetailedDto> findAllByItemOwner(String state, Long userId) {
         State status = tryDetectState(state);
         checkIfUserExists(userId);
         LocalDateTime now = LocalDateTime.now();
@@ -129,8 +129,8 @@ public class BookingServiceImpl implements BookingService {
                     .findBookingByItem_OwnerAndStatus(userId, BookingStatus.REJECTED, sort);
             case WAITING -> bookings = bookingRepository
                     .findBookingByItem_OwnerAndStatus(userId, BookingStatus.WAITING, sort);
-            case CURRENT -> bookings = bookingRepository
-                    .findBookingByItem_OwnerAndStatus(userId, BookingStatus.APPROVED, sort);
+            case CURRENT -> bookings = bookingRepository.findBookingsByItemOwnerCurrent(userId, now);
+//                    .findBookingByItem_OwnerAndStatus(userId, BookingStatus.APPROVED, sort);
             case FUTURE -> bookings = bookingRepository
                     .findBookingByItem_OwnerAndStartIsAfter(userId, now, sort);
             case PAST -> bookings = bookingRepository

@@ -71,4 +71,10 @@ public class ErrorHandler {
     public ErrorResponse handle(InvalidBookingException e) {
         return new ErrorResponse("недопустимое бронирование 404: ", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handle(CommentException e) {
+        return new ErrorResponse("невозможно оставить комментарий 400: ", e.getMessage());
+    }
 }

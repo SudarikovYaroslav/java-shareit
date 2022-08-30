@@ -43,12 +43,12 @@ public class BookingController {
     @GetMapping
     public List<BookingDetailedDto> findAllBookings(@RequestParam(defaultValue = DEFAULT_STATE_VALUE) String state,
                                                     @RequestHeader(USER_ID_HEADER) Long userId) {
-        return bookingService.findAllBookings(state, userId);
+        return bookingService.findAllByBooker(state, userId);
     }
 
     @GetMapping("/owner")
     public List<BookingDetailedDto> findAll(@RequestParam(defaultValue = DEFAULT_STATE_VALUE) String state,
                                             @RequestHeader(USER_ID_HEADER) Long userId) {
-        return bookingService.findAll(state, userId);
+        return bookingService.findAllByItemOwner(state, userId);
     }
 }

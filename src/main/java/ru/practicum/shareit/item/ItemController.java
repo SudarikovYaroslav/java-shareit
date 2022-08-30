@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentCreateDto;
+import ru.practicum.shareit.item.dto.CommentDetailedDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.validation_markers.Create;
 import ru.practicum.shareit.validation_markers.Update;
@@ -34,11 +35,11 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public ItemDto createComment(@Validated({Update.class}) @RequestBody CommentCreateDto commentDto,
-                                 @NotNull(message = (NULL_ITEM_ID_MESSAGE))
+    public CommentDetailedDto createComment(@Validated({Update.class}) @RequestBody CommentCreateDto commentDto,
+                                            @NotNull(message = (NULL_ITEM_ID_MESSAGE))
                                  @Min(MIN_ID_VALUE)
                                  @PathVariable Long itemId,
-                                 @NotNull(message = (NULL_USER_ID_MESSAGE))
+                                            @NotNull(message = (NULL_USER_ID_MESSAGE))
                                  @Min(MIN_ID_VALUE)
                                  @RequestHeader(USER_ID_HEADER) Long userId) {
         return itemService.createComment(commentDto, itemId, userId);
@@ -72,7 +73,8 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> findItemsByRequest(@RequestParam String text) {
-        return itemService.findItemsByRequest(text);
+    public List<ItemDto> findItemsByRequest(@RequestParam String text,
+                                            @RequestHeader(USER_ID_HEADER) Long userId) {
+        return itemService.findItemsByRequest(text, userId);
     }
 }

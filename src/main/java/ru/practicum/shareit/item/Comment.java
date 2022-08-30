@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,27 +26,14 @@ public class Comment {
     @Column(name = ID_COLUMN_NAME)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = OWNER_COLUMN_NAME, nullable = false)
-    private Long owner;
-    @Column(name = ITEM_COLUMN_NAME, nullable = false)
-    private Long item;
     @Column(name = TEXT_COLUMN_NAME, nullable = false, length = MAX_TEXT_LENGTH)
     private String text;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Comment comment = (Comment) o;
-        return id != null
-                && Objects.equals(id, comment.id)
-                && Objects.equals(owner, comment.owner)
-                && Objects.equals(item, comment.item)
-                && Objects.equals(text, comment.text);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, owner, item, text);
-    }
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
+    @NotNull
+    private LocalDateTime created;
 }

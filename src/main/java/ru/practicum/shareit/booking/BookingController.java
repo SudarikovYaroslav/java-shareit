@@ -46,7 +46,6 @@ public class BookingController {
         return bookingService.findAllBookings(state, userId);
     }
 
-    //TODO Получение списка бронирований для всех вещей текущего пользователя.
     @GetMapping("/owner")
     public List<BookingDetailedDto> findAll(@RequestParam(defaultValue = DEFAULT_STATE_VALUE) String state,
                                             @RequestHeader(USER_ID_HEADER) Long userId) {

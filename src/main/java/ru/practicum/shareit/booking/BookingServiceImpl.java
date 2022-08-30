@@ -7,17 +7,15 @@ import ru.practicum.shareit.booking.dto.BookingDetailedDto;
 import ru.practicum.shareit.booking.dto.BookingPostDto;
 import ru.practicum.shareit.booking.dto.BookingPostResponseDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
-import ru.practicum.shareit.exceptions.DeniedAccessException;
 import ru.practicum.shareit.exceptions.InvalidBookingException;
 import ru.practicum.shareit.exceptions.UnavailableBookingException;
 import ru.practicum.shareit.exceptions.UnsupportedStatusException;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -25,12 +23,6 @@ import java.util.NoSuchElementException;
 @AllArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
-    public static final String ALL = "ALL";
-    public static final String PAST = "PAST";
-    public static final String FUTURE = "FUTURE";
-    public static final String WAITING = "WAITING";
-    public static final String CURRENT = "CURRENT";
-    public static final String REJECTED = "REJECTED";
     public static final String ILLEGAL_SATE_MESSAGE = "  state: ";
     public static final String SATE_ALREADY_SET_MESSAGE = "статус уже выставлен state: ";
     public static final String BOOKING_INVALID_MESSAGE = "недопустимые значения времени бронирования: ";
@@ -63,7 +55,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Booking booking = mapper.toModel(dto, item, user);
-        return mapper.toPostDto(bookingRepository.save(booking), item);
+        return mapper.toPostResponseDto(bookingRepository.save(booking), item);
     }
 
     @Override
@@ -106,18 +98,18 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings;
         Sort sort = Sort.by("start").descending();
 
-        switch (status.name()) {
-            case (REJECTED) -> bookings = bookingRepository
+        switch (status) {
+            case REJECTED -> bookings = bookingRepository
                     .findByBooker_IdAndStatus(userId, BookingStatus.REJECTED, sort);
-            case (WAITING) -> bookings = bookingRepository
+            case WAITING -> bookings = bookingRepository
                     .findByBooker_IdAndStatus(userId, BookingStatus.WAITING, sort);
-            case (CURRENT) -> bookings = bookingRepository
+            case CURRENT -> bookings = bookingRepository
                     .findByBooker_IdAndStatus(userId, BookingStatus.APPROVED, sort);
-            case (FUTURE) -> bookings = bookingRepository
+            case FUTURE -> bookings = bookingRepository
                         .findByBooker_IdAndStartIsAfter(userId, now, sort);
-            case (PAST) -> bookings = bookingRepository
+            case PAST -> bookings = bookingRepository
                         .findByBooker_IdAndEndIsBefore(userId, now, sort);
-            case (ALL) -> bookings = bookingRepository.findByBooker_Id(userId, sort);
+            case ALL -> bookings = bookingRepository.findByBooker_Id(userId, sort);
 
             default -> throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);
         }
@@ -132,18 +124,18 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings;
         Sort sort = Sort.by("start").descending();
 
-        switch (status.name()) {
-            case (REJECTED) -> bookings = bookingRepository
+        switch (status) {
+            case REJECTED -> bookings = bookingRepository
                     .findBookingByItem_OwnerAndStatus(userId, BookingStatus.REJECTED, sort);
-            case (WAITING) -> bookings = bookingRepository
+            case WAITING -> bookings = bookingRepository
                     .findBookingByItem_OwnerAndStatus(userId, BookingStatus.WAITING, sort);
-            case (CURRENT) -> bookings = bookingRepository
+            case CURRENT -> bookings = bookingRepository
                     .findBookingByItem_OwnerAndStatus(userId, BookingStatus.APPROVED, sort);
-            case (FUTURE) -> bookings = bookingRepository
+            case FUTURE -> bookings = bookingRepository
                     .findBookingByItem_OwnerAndStartIsAfter(userId, now, sort);
-            case (PAST) -> bookings = bookingRepository
+            case PAST -> bookings = bookingRepository
                     .findBookingByItem_OwnerAndEndIsBefore(userId, now, sort);
-            case (ALL) -> bookings = bookingRepository
+            case ALL -> bookings = bookingRepository
                     .findBookingByItem_Owner(userId, sort);
 
             default -> throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);

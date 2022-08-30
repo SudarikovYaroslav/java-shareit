@@ -1,8 +1,8 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.ItemDto;
+import ru.practicum.shareit.booking.dto.BookingInItemDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,23 @@ import java.util.List;
 @Service
 public class ItemMapper {
     public ItemDto toDto(Item item) {
-        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable());
+        ItemDto dto = new ItemDto();
+        dto.setId(item.getId());
+        dto.setName(item.getName());
+        dto.setDescription(item.getDescription());
+        dto.setAvailable(item.getAvailable());
+        return dto;
+    }
+
+    public ItemDto toDto(Item item, BookingInItemDto lastBooking, BookingInItemDto nextBooking) {
+        ItemDto dto = new ItemDto();
+        dto.setId(item.getId());
+        dto.setName(item.getName());
+        dto.setDescription(item.getDescription());
+        dto.setAvailable(item.getAvailable());
+        dto.setLastBooking(lastBooking);
+        dto.setNextBooking(nextBooking);
+        return dto;
     }
 
     public Item toModel(ItemDto itemDto, Long ownerId) {

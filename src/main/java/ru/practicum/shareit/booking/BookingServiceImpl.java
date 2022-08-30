@@ -24,12 +24,12 @@ import java.util.NoSuchElementException;
 public class BookingServiceImpl implements BookingService {
 
     public static final String ILLEGAL_SATE_MESSAGE = "  state: ";
+    public static final String INVALID_BUCKING = "нельзя забронировать свою же вещь";
     public static final String SATE_ALREADY_SET_MESSAGE = "статус уже выставлен state: ";
     public static final String BOOKING_INVALID_MESSAGE = "недопустимые значения времени бронирования: ";
     public static final String UNAVAILABLE_BOOKING_MESSAGE = "в данный момент невозможно забронировать item: ";
     public static final String DENIED_PATCH_ACCESS_MESSAGE = "пользователь не является владельцем вещи userId: ";
     public static final String DENIED_ACCESS_MESSAGE = "пользователь не является владельцем вещи или брони userId: ";
-    public static final String INVALID_BUCKING = "нельзя забронировать свою же вещь";
 
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
@@ -103,7 +103,7 @@ public class BookingServiceImpl implements BookingService {
             case WAITING -> bookings = bookingRepository
                     .findByBooker_IdAndStatus(userId, BookingStatus.WAITING, sort);
             case CURRENT -> bookings = bookingRepository.findByBookerIdCurrent(userId, now);
-//                    .findByBooker_IdAndStatus(userId, BookingStatus.APPROVED, sort);
+
             case FUTURE -> bookings = bookingRepository
                         .findByBooker_IdAndStartIsAfter(userId, now, sort);
             case PAST -> bookings = bookingRepository
@@ -129,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
             case WAITING -> bookings = bookingRepository
                     .findBookingByItem_OwnerAndStatus(userId, BookingStatus.WAITING, sort);
             case CURRENT -> bookings = bookingRepository.findBookingsByItemOwnerCurrent(userId, now);
-//                    .findBookingByItem_OwnerAndStatus(userId, BookingStatus.APPROVED, sort);
+
             case FUTURE -> bookings = bookingRepository
                     .findBookingByItem_OwnerAndStartIsAfter(userId, now, sort);
             case PAST -> bookings = bookingRepository

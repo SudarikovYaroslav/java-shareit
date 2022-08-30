@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.mapper;
 
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
-import ru.practicum.shareit.booking.dto.BookingInItemDto;
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemDto;

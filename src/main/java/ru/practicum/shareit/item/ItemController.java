@@ -3,8 +3,8 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.CommentCreateDto;
-import ru.practicum.shareit.item.dto.CommentDetailedDto;
+import ru.practicum.shareit.item.dto.СreateCommentDto;
+import ru.practicum.shareit.item.dto.DetailedCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.validation_markers.Create;
 import ru.practicum.shareit.validation_markers.Update;
@@ -35,7 +35,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDetailedDto createComment(@Validated({Update.class}) @RequestBody CommentCreateDto commentDto,
+    public DetailedCommentDto createComment(@Validated({Update.class}) @RequestBody СreateCommentDto commentDto,
                                             @NotNull(message = (NULL_ITEM_ID_MESSAGE))
                                  @Min(MIN_ID_VALUE)
                                  @PathVariable Long itemId,

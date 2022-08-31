@@ -2,8 +2,8 @@ package ru.practicum.shareit.item.mapper;
 
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.dto.CommentCreateDto;
-import ru.practicum.shareit.item.dto.CommentDetailedDto;
+import ru.practicum.shareit.item.dto.СreateCommentDto;
+import ru.practicum.shareit.item.dto.DetailedCommentDto;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommentMapper {
-    public static Comment toModel(CommentCreateDto dto, Item item, User author) {
+    public static Comment toModel(СreateCommentDto dto, Item item, User author) {
         Comment comment = new Comment();
         comment.setText(dto.getText());
         comment.setItem(item);
@@ -20,8 +20,8 @@ public class CommentMapper {
         return comment;
     }
 
-    public static CommentDetailedDto toCommentDetailedDto(Comment comment) {
-        CommentDetailedDto dto = new CommentDetailedDto();
+    public static DetailedCommentDto toCommentDetailedDto(Comment comment) {
+        DetailedCommentDto dto = new DetailedCommentDto();
         dto.setId(comment.getId());
         dto.setText(comment.getText());
         dto.setAuthorName(comment.getAuthor().getName());
@@ -29,7 +29,7 @@ public class CommentMapper {
         return dto;
     }
 
-    public static List<CommentDetailedDto> toCommentDetailedDtoList(List<Comment> comments) {
+    public static List<DetailedCommentDto> toCommentDetailedDtoList(List<Comment> comments) {
         return comments.stream()
                 .map(CommentMapper::toCommentDetailedDto)
                 .collect(Collectors.toList());

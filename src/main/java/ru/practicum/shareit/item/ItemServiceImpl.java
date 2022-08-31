@@ -8,8 +8,8 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exceptions.CommentException;
 import ru.practicum.shareit.exceptions.DeniedAccessException;
 import ru.practicum.shareit.exceptions.OwnerNotFoundException;
-import ru.practicum.shareit.item.dto.CommentCreateDto;
-import ru.practicum.shareit.item.dto.CommentDetailedDto;
+import ru.practicum.shareit.item.dto.СreateCommentDto;
+import ru.practicum.shareit.item.dto.DetailedCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -46,11 +46,12 @@ public class ItemServiceImpl implements ItemService {
         if (!ownerExists) {
             throw new OwnerNotFoundException(OWNER_NOT_FOUND_MESSAGE + item.getOwner());
         }
-        return ItemMapper.toDto(itemRepository.save(item), null);
+        item = itemRepository.save(item);
+        return ItemMapper.toDto(item, null);
     }
 
     @Override
-    public CommentDetailedDto createComment(CommentCreateDto dto, Long itemId, Long userId) {
+    public DetailedCommentDto createComment(СreateCommentDto dto, Long itemId, Long userId) {
         if (dto.getText().isBlank()) throw new CommentException(EMPTY_COMMENT_MESSAGE);
         Item item = itemRepository.findById(itemId).orElseThrow();
         User author = userRepository.findById(userId).orElseThrow();
@@ -59,21 +60,23 @@ public class ItemServiceImpl implements ItemService {
             throw new CommentException(COMMENT_EXCEPTION_MESSAGE + " itemId: " + itemId);
         }
         Comment comment = CommentMapper.toModel(dto, item, author);
-        return CommentMapper.toCommentDetailedDto(commentRepository.save(comment));
+        comment = commentRepository.save(comment);
+        return CommentMapper.toCommentDetailedDto(comment);
     }
 
     @Override
     public ItemDto updateItem(ItemDto itemDto, Long itemId, Long userId) {
         Item item = ItemMapper.toModel(itemDto, userId);
         item.setId(itemId);
-        List<Comment> comments = commentRepository.findByItem_Id(itemId);
-        return ItemMapper.toDto(itemRepository.save(refreshItem(item)), comments);
+        List<Comment> comments = commentRepository.findByItemId(itemId);
+        item = itemRepository.save(refreshItem(item));
+        return ItemMapper.toDto(item, comments);
     }
 
     @Override
     public ItemDto findItemById(Long itemId, Long userId) {
         Item item = itemRepository.findById(itemId).orElseThrow();
-        List<Comment> comments = commentRepository.findByItem_Id(itemId);
+        List<Comment> comments = commentRepository.findByItemId(itemId);
 
         if (item.getOwner().equals(userId)) {
             LocalDateTime now = LocalDateTime.now();
@@ -150,7 +153,7 @@ public class ItemServiceImpl implements ItemService {
         Sort sortDesc = Sort.by("start").descending();
 
         for (Item item : foundItems) {
-            List<Comment> comments = commentRepository.findByItem_Id(item.getId());
+            List<Comment> comments = commentRepository.findByItemId(item.getId());
             if (item.getOwner().equals(userId)) {
                 ItemDto dto = constructItemDtoForOwner(item, now, sortDesc, comments);
                 targetList.add(dto);
@@ -161,9 +164,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private ItemDto constructItemDtoForOwner(Item item , LocalDateTime now, Sort sort, List<Comment> comments) {
-        Booking lastBooking = bookingRepository.findBookingByItem_IdAndEndBefore(item.getId(), now, sort)
+        Booking lastBooking = bookingRepository.findBookingByItemIdAndEndBefore(item.getId(), now, sort)
                 .stream().findFirst().orElse(null);
-        Booking nextBooking = bookingRepository.findBookingByItem_IdAndStartAfter(item.getId(), now, sort)
+        Booking nextBooking = bookingRepository.findBookingByItemIdAndStartAfter(item.getId(), now, sort)
                 .stream().findFirst().orElse(null);
 
         return ItemMapper.toDto(item,

@@ -54,7 +54,8 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Booking booking = BookingMapper.toModel(dto, item, user);
-        return BookingMapper.toPostResponseDto(bookingRepository.save(booking), item);
+        booking = bookingRepository.save(booking);
+        return BookingMapper.toPostResponseDto(booking, item);
     }
 
     @Override
@@ -65,14 +66,15 @@ public class BookingServiceImpl implements BookingService {
         if (!item.getOwner().equals(userId)) {
             throw new NoSuchElementException(DENIED_PATCH_ACCESS_MESSAGE + userId + " itemId: " + item.getId());
         }
-        BookingStatus status = detectStatus(approved);
+        BookingStatus status = convertToStatus(approved);
 
         if (booking.getStatus().equals(status)) {
             throw new IllegalArgumentException(SATE_ALREADY_SET_MESSAGE + status);
         }
 
         booking.setStatus(status);
-        return BookingMapper.toResponseDto(bookingRepository.save(booking), booking.getBooker(), item);
+        booking = bookingRepository.save(booking);
+        return BookingMapper.toResponseDto(booking, booking.getBooker(), item);
     }
 
     @Override
@@ -91,7 +93,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDetailedDto> findAllByBooker(String state, Long userId) {
-        State status = tryDetectState(state);
+        State status = parseState(state);
         checkIfUserExists(userId);
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;
@@ -99,16 +101,16 @@ public class BookingServiceImpl implements BookingService {
 
         switch (status) {
             case REJECTED -> bookings = bookingRepository
-                    .findByBooker_IdAndStatus(userId, BookingStatus.REJECTED, sort);
+                    .findByBookerIdAndStatus(userId, BookingStatus.REJECTED, sort);
             case WAITING -> bookings = bookingRepository
-                    .findByBooker_IdAndStatus(userId, BookingStatus.WAITING, sort);
+                    .findByBookerIdAndStatus(userId, BookingStatus.WAITING, sort);
             case CURRENT -> bookings = bookingRepository.findByBookerIdCurrent(userId, now);
 
             case FUTURE -> bookings = bookingRepository
-                        .findByBooker_IdAndStartIsAfter(userId, now, sort);
+                        .findByBookerIdAndStartIsAfter(userId, now, sort);
             case PAST -> bookings = bookingRepository
-                        .findByBooker_IdAndEndIsBefore(userId, now, sort);
-            case ALL -> bookings = bookingRepository.findByBooker_Id(userId, sort);
+                        .findByBookerIdAndEndIsBefore(userId, now, sort);
+            case ALL -> bookings = bookingRepository.findByBookerId(userId, sort);
 
             default -> throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);
         }
@@ -116,26 +118,26 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDetailedDto> findAllByItemOwner(String state, Long userId) {
-        State status = tryDetectState(state);
+    public List<BookingDetailedDto> findAllByItemOwner(String stateValue, Long userId) {
+        State state = parseState(stateValue);
         checkIfUserExists(userId);
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;
         Sort sort = Sort.by("start").descending();
 
-        switch (status) {
+        switch (state) {
             case REJECTED -> bookings = bookingRepository
-                    .findBookingByItem_OwnerAndStatus(userId, BookingStatus.REJECTED, sort);
+                    .findBookingByItemOwnerAndStatus(userId, BookingStatus.REJECTED, sort);
             case WAITING -> bookings = bookingRepository
-                    .findBookingByItem_OwnerAndStatus(userId, BookingStatus.WAITING, sort);
+                    .findBookingByItemOwnerAndStatus(userId, BookingStatus.WAITING, sort);
             case CURRENT -> bookings = bookingRepository.findBookingsByItemOwnerCurrent(userId, now);
 
             case FUTURE -> bookings = bookingRepository
-                    .findBookingByItem_OwnerAndStartIsAfter(userId, now, sort);
+                    .findBookingByItemOwnerAndStartIsAfter(userId, now, sort);
             case PAST -> bookings = bookingRepository
-                    .findBookingByItem_OwnerAndEndIsBefore(userId, now, sort);
+                    .findBookingByItemOwnerAndEndIsBefore(userId, now, sort);
             case ALL -> bookings = bookingRepository
-                    .findBookingByItem_Owner(userId, sort);
+                    .findBookingByItemOwner(userId, sort);
 
             default -> throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);
         }
@@ -146,7 +148,7 @@ public class BookingServiceImpl implements BookingService {
         userRepository.findById(userId).orElseThrow();
     }
 
-    private State tryDetectState(String state) {
+    private State parseState(String state) {
         State status;
         try {
             status = State.valueOf(state);
@@ -160,7 +162,7 @@ public class BookingServiceImpl implements BookingService {
         return dto.getStart().isBefore(dto.getEnd());
     }
 
-    private BookingStatus detectStatus(Boolean b) {
-        return b ? BookingStatus.APPROVED : BookingStatus.REJECTED;
+    private BookingStatus convertToStatus(Boolean approved) {
+        return approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
     }
 }

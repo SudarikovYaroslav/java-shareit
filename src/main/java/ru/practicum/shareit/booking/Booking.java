@@ -17,7 +17,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity(name = "bookings")
 public class Booking {
-    public static final int MAX_STATUS_LENGTH = 64;
     public static final String ITEM_COLUMN_NAME = "item";
     public static final String END_COLUMN_NAME = "end_time";
     public static final String ID_COLUMN_NAME = "booking_id";
@@ -39,7 +38,7 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "booker_id")
     private User booker;
-    @Column(name = STATUS_COLUMN_NAME, nullable = false, length = MAX_STATUS_LENGTH)
+    @Column(name = STATUS_COLUMN_NAME, nullable = false)
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 

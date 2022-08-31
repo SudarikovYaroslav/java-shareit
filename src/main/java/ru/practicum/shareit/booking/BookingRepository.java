@@ -9,25 +9,25 @@ import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByBooker_IdAndEndIsBefore(Long bookerId, LocalDateTime now, Sort sort);
+    List<Booking> findByBookerIdAndEndIsBefore(Long bookerId, LocalDateTime now, Sort sort);
 
-    List<Booking> findByBooker_IdAndStartIsAfter(Long bookerId, LocalDateTime now, Sort sort);
+    List<Booking> findByBookerIdAndStartIsAfter(Long bookerId, LocalDateTime now, Sort sort);
 
-    List<Booking> findByBooker_IdAndStatus(Long bookerId, BookingStatus status, Sort sort);
+    List<Booking> findByBookerIdAndStatus(Long bookerId, BookingStatus status, Sort sort);
 
-    List<Booking> findByBooker_Id(Long bookerId, Sort sort);
+    List<Booking> findByBookerId(Long bookerId, Sort sort);
 
-    List<Booking> findBookingByItem_OwnerAndStatus(Long bookerId, BookingStatus status, Sort sort);
+    List<Booking> findBookingByItemOwnerAndStatus(Long bookerId, BookingStatus status, Sort sort);
 
-    List<Booking> findBookingByItem_OwnerAndEndIsBefore(Long bookerId, LocalDateTime now, Sort sort);
+    List<Booking> findBookingByItemOwnerAndEndIsBefore(Long bookerId, LocalDateTime now, Sort sort);
 
-    List<Booking> findBookingByItem_OwnerAndStartIsAfter(Long bookerId, LocalDateTime now, Sort sort);
+    List<Booking> findBookingByItemOwnerAndStartIsAfter(Long bookerId, LocalDateTime now, Sort sort);
 
-    List<Booking> findBookingByItem_Owner(Long bookerId, Sort sort);
+    List<Booking> findBookingByItemOwner(Long bookerId, Sort sort);
 
-    List<Booking> findBookingByItem_IdAndEndBefore(Long itemId, LocalDateTime now, Sort sort);
+    List<Booking> findBookingByItemIdAndEndBefore(Long itemId, LocalDateTime now, Sort sort);
 
-    List<Booking> findBookingByItem_IdAndStartAfter(Long itemId, LocalDateTime now, Sort sort);
+    List<Booking> findBookingByItemIdAndStartAfter(Long itemId, LocalDateTime now, Sort sort);
 
     @Query("select b from bookings b " +
             "where b.booker.id = ?1 " +

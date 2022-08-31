@@ -14,13 +14,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         User user = UserMapper.toModel(userDto, null);
-        return UserMapper.toDto(userRepository.save(user));
+        user = userRepository.save(user);
+        return UserMapper.toDto(user);
     }
 
     @Override
     public UserDto updateUser(long userId, UserDto userDto) {
         User user = patchUser(userId, userDto);
-        return UserMapper.toDto(userRepository.save(user));
+        user = userRepository.save(user);
+        return UserMapper.toDto(user);
     }
 
     @Override

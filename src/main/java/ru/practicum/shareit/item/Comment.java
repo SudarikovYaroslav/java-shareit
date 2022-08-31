@@ -29,7 +29,7 @@ public class Comment {
     @Column(name = TEXT_COLUMN_NAME, nullable = false, length = MAX_TEXT_LENGTH)
     private String text;
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = Item.ID_COLUMN_NAME)
     private Item item;
     @ManyToOne
     @JoinColumn(name = "author_id")

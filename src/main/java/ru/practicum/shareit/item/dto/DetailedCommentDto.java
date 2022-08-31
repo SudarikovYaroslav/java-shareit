@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentDetailedDto {
+public class DetailedCommentDto {
     private Long id;
     private String text;
     private String authorName;

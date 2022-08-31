@@ -25,5 +25,5 @@ public class ItemDto {
     private Boolean available;
     private BookingInItemDto lastBooking;
     private BookingInItemDto nextBooking;
-    private List<CommentDetailedDto> comments;
+    private List<DetailedCommentDto> comments;
 }

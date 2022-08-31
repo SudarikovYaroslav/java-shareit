@@ -96,11 +96,21 @@ public class ItemServiceImpl implements ItemService {
         fillItemDtoList(result, userItems, userId);
 
         result.sort((o1, o2) -> {
-            if (o1.getNextBooking() == null && o2.getNextBooking() == null) {return 0; }
-            if (o1.getNextBooking() != null && o2.getNextBooking() == null) { return -1; }
-            if (o1.getNextBooking() == null && o2.getNextBooking() != null) { return 1; }
-            if (o1.getNextBooking().getStart().isBefore(o2.getNextBooking().getStart())) { return -1; }
-            if (o1.getNextBooking().getStart().isAfter(o2.getNextBooking().getStart())) { return 1; }
+            if (o1.getNextBooking() == null && o2.getNextBooking() == null) {
+                return 0;
+            }
+            if (o1.getNextBooking() != null && o2.getNextBooking() == null) {
+                return -1;
+            }
+            if (o1.getNextBooking() == null && o2.getNextBooking() != null) {
+                return 1;
+            }
+            if (o1.getNextBooking().getStart().isBefore(o2.getNextBooking().getStart())) {
+                return -1;
+            }
+            if (o1.getNextBooking().getStart().isAfter(o2.getNextBooking().getStart())) {
+                return 1;
+            }
             return 0;
         });
         return result;
@@ -158,12 +168,12 @@ public class ItemServiceImpl implements ItemService {
                 ItemDto dto = constructItemDtoForOwner(item, now, sortDesc, comments);
                 targetList.add(dto);
             } else {
-                targetList.add(ItemMapper.toDto(item,comments));
+                targetList.add(ItemMapper.toDto(item, comments));
             }
         }
     }
 
-    private ItemDto constructItemDtoForOwner(Item item , LocalDateTime now, Sort sort, List<Comment> comments) {
+    private ItemDto constructItemDtoForOwner(Item item, LocalDateTime now, Sort sort, List<Comment> comments) {
         Booking lastBooking = bookingRepository.findBookingByItemIdAndEndBefore(item.getId(), now, sort)
                 .stream().findFirst().orElse(null);
         Booking nextBooking = bookingRepository.findBookingByItemIdAndStartAfter(item.getId(), now, sort)

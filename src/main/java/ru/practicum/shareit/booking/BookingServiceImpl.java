@@ -39,7 +39,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingPostResponseDto createBooking(BookingPostDto dto, Long userId) {
         if (!isStartBeforeEnd(dto)) {
             throw new IllegalArgumentException(BOOKING_INVALID_MESSAGE +
-                    "start: " +dto.getStart() + " end: " + dto.getEnd() + " now: ");
+                    "start: " + dto.getStart() + " end: " + dto.getEnd() + " now: ");
         }
 
         User user = userRepository.findById(userId).orElseThrow();
@@ -107,9 +107,9 @@ public class BookingServiceImpl implements BookingService {
             case CURRENT -> bookings = bookingRepository.findByBookerIdCurrent(userId, now);
 
             case FUTURE -> bookings = bookingRepository
-                        .findByBookerIdAndStartIsAfter(userId, now, sort);
+                    .findByBookerIdAndStartIsAfter(userId, now, sort);
             case PAST -> bookings = bookingRepository
-                        .findByBookerIdAndEndIsBefore(userId, now, sort);
+                    .findByBookerIdAndEndIsBefore(userId, now, sort);
             case ALL -> bookings = bookingRepository.findByBookerId(userId, sort);
 
             default -> throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);

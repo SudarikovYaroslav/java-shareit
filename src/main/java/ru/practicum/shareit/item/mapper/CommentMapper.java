@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.mapper;
 
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.dto.СreateCommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.DetailedCommentDto;
 import ru.practicum.shareit.user.User;
 
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommentMapper {
-    public static Comment toModel(СreateCommentDto dto, Item item, User author) {
+    public static Comment toModel(CreateCommentDto dto, Item item, User author) {
         Comment comment = new Comment();
         comment.setText(dto.getText());
         comment.setItem(item);

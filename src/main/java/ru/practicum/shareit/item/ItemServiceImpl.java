@@ -8,7 +8,7 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exceptions.CommentException;
 import ru.practicum.shareit.exceptions.DeniedAccessException;
 import ru.practicum.shareit.exceptions.OwnerNotFoundException;
-import ru.practicum.shareit.item.dto.СreateCommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.DetailedCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
@@ -51,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public DetailedCommentDto createComment(СreateCommentDto dto, Long itemId, Long userId) {
+    public DetailedCommentDto createComment(CreateCommentDto dto, Long itemId, Long userId) {
         if (dto.getText().isBlank()) throw new CommentException(EMPTY_COMMENT_MESSAGE);
         Item item = itemRepository.findById(itemId).orElseThrow();
         User author = userRepository.findById(userId).orElseThrow();

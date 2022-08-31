@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class СreateCommentDto {
+public class CreateCommentDto {
     @NotBlank(groups = Create.class)
     private String text;
 }

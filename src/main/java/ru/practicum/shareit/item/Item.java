@@ -19,6 +19,7 @@ public class Item {
     public static final String ID_COLUMN_NAME = "item_id";
     public static final String OWNER_COLUMN_NAME = "owner";
     public static final String AVAILABLE_COLUMN_NAME = "available";
+    public static final String REQUEST_ID_COLUMN_NAME = "request_id";
     public static final String DESCRIPTION_COLUMN_NAME = "description";
 
     @Id
@@ -33,6 +34,8 @@ public class Item {
     private Boolean available;
     @Column(name = OWNER_COLUMN_NAME, nullable = false)
     private Long owner;
+    @Column(name = REQUEST_ID_COLUMN_NAME)
+    private Long requestId;
 
     @Override
     public boolean equals(Object o) {

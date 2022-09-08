@@ -41,7 +41,13 @@ public class ItemMapper {
     }
 
     public static Item toModel(ItemDto itemDto, Long ownerId) {
-        return new Item(null, itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(), ownerId);
+        Item item = new Item();
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
+        item.setOwner(ownerId);
+        item.setRequestId(itemDto.getRequestId());
+        return item;
     }
 
     public static InRequestItemDto toInRequestItemDto(Item item) {

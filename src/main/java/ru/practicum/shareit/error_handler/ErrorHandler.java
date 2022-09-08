@@ -77,4 +77,10 @@ public class ErrorHandler {
     public ErrorResponse handle(CommentException e) {
         return new ErrorResponse("невозможно оставить комментарий 400: ", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handle(RequestNotFoundException e) {
+        return new ErrorResponse("запрос не найден 404: ", e.getMessage());
+    }
 }

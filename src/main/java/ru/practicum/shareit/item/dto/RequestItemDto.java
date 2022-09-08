@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InRequestItemDto {
+public class RequestItemDto {
     private Long id;
     private String name;
     private Long owner;

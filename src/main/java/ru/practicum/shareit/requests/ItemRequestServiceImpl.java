@@ -2,10 +2,10 @@ package ru.practicum.shareit.requests;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.RequestNotFoundException;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.dto.InRequestItemDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
-import ru.practicum.shareit.requests.dto.DetailedResponseRequestDto;
+import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
 import ru.practicum.shareit.requests.dto.PostRequestDto;
 import ru.practicum.shareit.requests.dto.PostResponseRequestDto;
 import ru.practicum.shareit.user.UserRepository;
@@ -17,7 +17,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
 
+    public static final String REQUEST_NOT_FOUND_MESSAGE = "не найден запрос id: ";
+
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
     private final ItemRequestRepository requestRepository;
 
     @Override
@@ -28,25 +31,28 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return RequestMapper.toPostResponseDto(request);
     }
 
-    //TODO сделать кастомный запрос в БД и маппинг.
-    // Похоже для начала нужно реализовать  опцию ответа на запрос,
-    // а то совсем не понятно, каким образом собрать список вещей по запросу
     @Override
-    public List<DetailedResponseRequestDto> find(Long userId) {
+    public List<RequestWithItemsDto> findAll(Long userId) {
         checkIfUserExists(userId);
-        List<DetailedResponseRequestDto> result = new ArrayList<>();
+        List<RequestWithItemsDto> result = new ArrayList<>();
         List<Request> requests = requestRepository.findRequestByRequestorOrderByCreatedDesc(userId);
 
         if (requests != null && !requests.isEmpty()) {
-
             for (Request request : requests) {
-                List<Item> items = new ArrayList<>(); //TODO получить как то вещи по ответам из БД вместо new List
-                List<InRequestItemDto> requestItemDtos = ItemMapper.toInRequestItemDtoList(items);
-                DetailedResponseRequestDto dto = RequestMapper.toDetailedResponseRequestDto(request, requestItemDtos);
+                List<Item> items = itemRepository.findAllByRequestId(request.getId());
+                RequestWithItemsDto dto = RequestMapper.toRequestWithItemsDto(request, items);
                 result.add(dto);
             }
         }
         return result;
+    }
+
+    @Override
+    public RequestWithItemsDto findById(Long requestId, Long userId) {
+        checkIfUserExists(userId);
+        Request request = requestRepository.findById(requestId).orElseThrow();
+        List<Item> items = itemRepository.findAllByRequestId(requestId);
+        return RequestMapper.toRequestWithItemsDto(request, items);
     }
 
     private void checkIfUserExists(Long userId) {

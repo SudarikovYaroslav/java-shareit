@@ -10,6 +10,5 @@ public interface ItemRequestRepository extends JpaRepository<Request, Long> {
 
     Page<Request> findRequestsByRequestor(Long requestor, Pageable pageable);
 
-    @Deprecated
     List<Request> findRequestByRequestorOrderByCreatedDesc(Long requestor);
 }

@@ -35,14 +35,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return RequestMapper.toPostResponseDto(request);
     }
 
-    // раньше возвращал без пагинации List непонятно нужна она тут или нет
-    // если, что в репозитории и маппере остались старые deprecated методы на List
     @Override
-    public Page<RequestWithItemsDto> findAllByUserId(Long userId) {
+    public List<RequestWithItemsDto> findAllByUserId(Long userId) {
         checkIfUserExists(userId);
-        Pageable pageable = PageRequest.of(DEFAULT_FROM_VALUE, DEFAULT_SIZE_VALUE, SORT);
-        Page<Request> requests = requestRepository.findRequestsByRequestor(userId, pageable);
-        return RequestMapper.toRequestWithItemsDtoPage(requests, itemRepository);
+        List<Request> requests = requestRepository.findRequestByRequestorOrderByCreatedDesc(userId);
+        return RequestMapper.toRequestWithItemsDtoList(requests, itemRepository);
     }
 
     // тут пагинация по ТЗ нужна
@@ -50,6 +47,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public Page<RequestWithItemsDto> findAll(int from, int size, Long userId) {
         checkIfUserExists(userId);
         Pageable pageable = PageRequest.of(from, size, SORT);
+        List<Request> test = requestRepository.findAll();
         Page<Request> requests = requestRepository.findAll(pageable);
         return RequestMapper.toRequestWithItemsDtoPage(requests, itemRepository);
     }

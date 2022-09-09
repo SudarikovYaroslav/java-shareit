@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
 import ru.practicum.shareit.requests.dto.PostRequestDto;
 import ru.practicum.shareit.requests.dto.PostResponseRequestDto;
+import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
 import ru.practicum.shareit.validation_markers.Create;
 
 import javax.validation.constraints.Min;
@@ -33,7 +33,7 @@ public class ItemRequestController {
     }
 
     @GetMapping
-    public Page<RequestWithItemsDto> findAllByUserId(@RequestHeader(USER_ID_HEADER) Long userId) {
+    public List<RequestWithItemsDto> findAllByUserId(@RequestHeader(USER_ID_HEADER) Long userId) {
         return service.findAllByUserId(userId);
     }
 

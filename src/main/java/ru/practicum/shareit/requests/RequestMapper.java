@@ -49,8 +49,8 @@ public class RequestMapper {
         });
     }
 
-    @Deprecated
-    public static List<RequestWithItemsDto> toRequestWithItemsDtoList(List<Request> requests, ItemRepository repository) {
+    public static List<RequestWithItemsDto> toRequestWithItemsDtoList(List<Request> requests,
+                                                                      ItemRepository repository) {
         List<RequestWithItemsDto> result = new ArrayList<>();
         if (requests != null && !requests.isEmpty()) {
             for (Request request : requests) {

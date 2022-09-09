@@ -4,7 +4,7 @@ import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.dto.RequestItemDto;
+import ru.practicum.shareit.item.dto.ItemInRequestDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.List;
@@ -50,15 +50,18 @@ public class ItemMapper {
         return item;
     }
 
-    public static RequestItemDto toRequestItemDto(Item item) {
-        RequestItemDto dto = new RequestItemDto();
+    public static ItemInRequestDto toRequestItemDto(Item item) {
+        ItemInRequestDto dto = new ItemInRequestDto();
         dto.setId(item.getOwner());
         dto.setName(item.getName());
+        dto.setDescription(item.getDescription());
+        dto.setAvailable(item.getAvailable());
+        dto.setRequestId(item.getRequestId());
         dto.setOwner(item.getOwner());
         return dto;
     }
 
-    public static List<RequestItemDto> toRequestItemDtoList(List<Item> items) {
+    public static List<ItemInRequestDto> toRequestItemDtoList(List<Item> items) {
         return items.stream()
                 .map(ItemMapper::toRequestItemDto)
                 .collect(Collectors.toList());

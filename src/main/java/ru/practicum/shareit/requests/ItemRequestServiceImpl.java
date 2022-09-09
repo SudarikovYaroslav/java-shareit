@@ -1,8 +1,11 @@
 package ru.practicum.shareit.requests;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.RequestNotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
@@ -10,14 +13,15 @@ import ru.practicum.shareit.requests.dto.PostRequestDto;
 import ru.practicum.shareit.requests.dto.PostResponseRequestDto;
 import ru.practicum.shareit.user.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
 
-    public static final String REQUEST_NOT_FOUND_MESSAGE = "не найден запрос id: ";
+    public static final int DEFAULT_FROM_VALUE = 0;
+    public static final int DEFAULT_SIZE_VALUE = 20;
+    public static final Sort SORT = Sort.by("created").descending();
 
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
@@ -31,20 +35,23 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return RequestMapper.toPostResponseDto(request);
     }
 
+    // раньше возвращал без пагинации List непонятно нужна она тут или нет
+    // если, что в репозитории и маппере остались старые deprecated методы на List
     @Override
-    public List<RequestWithItemsDto> findAll(Long userId) {
+    public Page<RequestWithItemsDto> findAllByUserId(Long userId) {
         checkIfUserExists(userId);
-        List<RequestWithItemsDto> result = new ArrayList<>();
-        List<Request> requests = requestRepository.findRequestByRequestorOrderByCreatedDesc(userId);
+        Pageable pageable = PageRequest.of(DEFAULT_FROM_VALUE, DEFAULT_SIZE_VALUE, SORT);
+        Page<Request> requests = requestRepository.findRequestsByRequestor(userId, pageable);
+        return RequestMapper.toRequestWithItemsDtoPage(requests, itemRepository);
+    }
 
-        if (requests != null && !requests.isEmpty()) {
-            for (Request request : requests) {
-                List<Item> items = itemRepository.findAllByRequestId(request.getId());
-                RequestWithItemsDto dto = RequestMapper.toRequestWithItemsDto(request, items);
-                result.add(dto);
-            }
-        }
-        return result;
+    // тут пагинация по ТЗ нужна
+    @Override
+    public Page<RequestWithItemsDto> findAll(int from, int size, Long userId) {
+        checkIfUserExists(userId);
+        Pageable pageable = PageRequest.of(from, size, SORT);
+        Page<Request> requests = requestRepository.findAll(pageable);
+        return RequestMapper.toRequestWithItemsDtoPage(requests, itemRepository);
     }
 
     @Override

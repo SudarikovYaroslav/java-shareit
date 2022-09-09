@@ -19,7 +19,7 @@ import java.util.List;
 public class ItemRequestController {
 
     public static final int MIN_VALUE = 1;
-    public static final String DEFAULT_FROM_VALUE = "0";
+    public static final String DEFAULT_FROM_VALUE = "1";
     public static final String DEFAULT_SIZE_VALUE = "20";
     public static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
@@ -40,7 +40,9 @@ public class ItemRequestController {
     //TODO добавить пагинацию
     @GetMapping ("/all")
     public Page<RequestWithItemsDto> findAll(@Positive
+                                             @Min(MIN_VALUE)
                                              @RequestParam(defaultValue = DEFAULT_FROM_VALUE) int from,
+                                             @Positive
                                              @Min(MIN_VALUE)
                                              @RequestParam(defaultValue = DEFAULT_SIZE_VALUE) int size,
                                              @RequestHeader(USER_ID_HEADER) Long userId) {
@@ -49,8 +51,8 @@ public class ItemRequestController {
 
     @GetMapping("/{requestId}")
     public RequestWithItemsDto findById(@Min(MIN_VALUE)
-                                           @PathVariable Long requestId,
-                                           @RequestHeader(USER_ID_HEADER) Long userId) {
+                                        @PathVariable Long requestId,
+                                        @RequestHeader(USER_ID_HEADER) Long userId) {
         return service.findById(requestId, userId);
     }
 }

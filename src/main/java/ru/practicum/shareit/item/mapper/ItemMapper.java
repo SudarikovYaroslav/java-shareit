@@ -20,6 +20,7 @@ public class ItemMapper {
         if (comments != null) {
             dto.setComments(CommentMapper.toCommentDetailedDtoList(comments));
         }
+        dto.setRequestId(item.getRequestId());
         return dto;
     }
 

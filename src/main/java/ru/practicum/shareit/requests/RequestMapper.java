@@ -12,6 +12,7 @@ import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RequestMapper {
 
@@ -41,12 +42,13 @@ public class RequestMapper {
         return dto;
     }
 
-    public static Page<RequestWithItemsDto> toRequestWithItemsDtoPage(Page<Request> requests,
+    public static List<RequestWithItemsDto> toRequestWithItemsDtoList(Page<Request> requests,
                                                                       ItemRepository repository) {
-        return requests.map((Request request)-> {
-            List<Item> items = repository.findAllByRequestId(request.getId());
-            return RequestMapper.toRequestWithItemsDto(request, items);
-        });
+        return requests.stream()
+                .map((Request request) -> {
+                    List<Item> items = repository.findAllByRequestId(request.getId());
+                    return RequestMapper.toRequestWithItemsDto(request, items);
+                }).collect(Collectors.toList());
     }
 
     public static List<RequestWithItemsDto> toRequestWithItemsDtoList(List<Request> requests,
@@ -62,3 +64,13 @@ public class RequestMapper {
         return result;
     }
 }
+
+/*
+* public static List<RequestWithItemsDto> toRequestWithItemsDtoList(Page<Request> requests,
+                                                                      ItemRepository repository) {
+        return requests.map((Request request)-> {
+            List<Item> items = repository.findAllByRequestId(request.getId());
+            return RequestMapper.toRequestWithItemsDto(request, items);
+        });
+    }
+* */

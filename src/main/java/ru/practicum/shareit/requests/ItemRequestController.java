@@ -39,7 +39,7 @@ public class ItemRequestController {
 
     //TODO добавить пагинацию
     @GetMapping ("/all")
-    public Page<RequestWithItemsDto> findAll(@Positive
+    public List<RequestWithItemsDto> findAll(@Positive
                                              @Min(MIN_VALUE)
                                              @RequestParam(defaultValue = DEFAULT_FROM_VALUE) int from,
                                              @Positive

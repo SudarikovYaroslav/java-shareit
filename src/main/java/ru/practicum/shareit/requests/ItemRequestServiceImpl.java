@@ -42,14 +42,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return RequestMapper.toRequestWithItemsDtoList(requests, itemRepository);
     }
 
-    //TODO падает тест хотя страница приходит пустая
+    //TODO сделать конвертацию Page в List в сервисе при маппинге
     @Override
-    public Page<RequestWithItemsDto> findAll(int from, int size, Long userId) {
+    public List<RequestWithItemsDto> findAll(int from, int size, Long userId) {
         checkIfUserExists(userId);
         Pageable pageable = PageRequest.of(from, size, SORT);
         Page<Request> requests = requestRepository.findAll(pageable);
-        Page<RequestWithItemsDto> result = RequestMapper.toRequestWithItemsDtoPage(requests, itemRepository);
-        return result.isEmpty() ? Page.empty() : result;
+        return RequestMapper.toRequestWithItemsDtoList(requests, itemRepository);
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface ItemRequestService {
 
     List<RequestWithItemsDto> findAllByUserId(Long userId);
 
-    Page<RequestWithItemsDto> findAll(int from, int size, Long userId);
+    List<RequestWithItemsDto> findAll(int from, int size, Long userId);
 
     RequestWithItemsDto findById(Long requestId, Long userId);
 }

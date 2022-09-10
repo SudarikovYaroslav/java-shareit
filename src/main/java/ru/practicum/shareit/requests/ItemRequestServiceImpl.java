@@ -42,12 +42,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return RequestMapper.toRequestWithItemsDtoList(requests, itemRepository);
     }
 
-    //TODO сделать конвертацию Page в List в сервисе при маппинге
     @Override
     public List<RequestWithItemsDto> findAll(int from, int size, Long userId) {
         checkIfUserExists(userId);
         Pageable pageable = PageRequest.of(from, size, SORT);
-        Page<Request> requests = requestRepository.findAll(pageable);
+        Page<Request> requests = requestRepository.findAll(userId, pageable);
         return RequestMapper.toRequestWithItemsDtoList(requests, itemRepository);
     }
 

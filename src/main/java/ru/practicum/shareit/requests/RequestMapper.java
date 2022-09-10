@@ -64,13 +64,3 @@ public class RequestMapper {
         return result;
     }
 }
-
-/*
-* public static List<RequestWithItemsDto> toRequestWithItemsDtoList(Page<Request> requests,
-                                                                      ItemRepository repository) {
-        return requests.map((Request request)-> {
-            List<Item> items = repository.findAllByRequestId(request.getId());
-            return RequestMapper.toRequestWithItemsDto(request, items);
-        });
-    }
-* */

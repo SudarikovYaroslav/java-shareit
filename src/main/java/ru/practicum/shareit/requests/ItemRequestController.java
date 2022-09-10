@@ -37,7 +37,6 @@ public class ItemRequestController {
         return service.findAllByUserId(userId);
     }
 
-    //TODO добавить пагинацию
     @GetMapping ("/all")
     public List<RequestWithItemsDto> findAll(@Positive
                                              @Min(MIN_VALUE)

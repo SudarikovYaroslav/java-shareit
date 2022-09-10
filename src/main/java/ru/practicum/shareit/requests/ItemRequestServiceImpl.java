@@ -19,8 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
 
-    public static final int DEFAULT_FROM_VALUE = 0;
-    public static final int DEFAULT_SIZE_VALUE = 20;
     public static final Sort SORT = Sort.by("created").descending();
 
     private final UserRepository userRepository;

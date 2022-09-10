@@ -1,6 +1,5 @@
 package ru.practicum.shareit.requests;
 
-import org.springframework.data.domain.Page;
 import ru.practicum.shareit.requests.dto.PostRequestDto;
 import ru.practicum.shareit.requests.dto.PostResponseRequestDto;
 import ru.practicum.shareit.requests.dto.RequestWithItemsDto;

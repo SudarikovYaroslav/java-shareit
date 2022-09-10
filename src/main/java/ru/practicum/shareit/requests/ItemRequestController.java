@@ -1,7 +1,6 @@
 package ru.practicum.shareit.requests;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.requests.dto.PostRequestDto;
@@ -19,7 +18,7 @@ import java.util.List;
 public class ItemRequestController {
 
     public static final int MIN_VALUE = 1;
-    public static final String DEFAULT_FROM_VALUE = "1";
+    public static final String DEFAULT_FROM_VALUE = "0";
     public static final String DEFAULT_SIZE_VALUE = "20";
     public static final String USER_ID_HEADER = "X-Sharer-User-Id";
 

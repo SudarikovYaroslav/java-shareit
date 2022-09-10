@@ -23,13 +23,13 @@ import java.util.NoSuchElementException;
 
 import static ru.practicum.shareit.booking.BookingStatus.REJECTED;
 import static ru.practicum.shareit.booking.BookingStatus.WAITING;
-import static ru.practicum.shareit.booking.State.*;
 
 @Service
 @AllArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
     public static final String ILLEGAL_SATE_MESSAGE = "  state: ";
+    public static final Sort SORT = Sort.by("start").descending();
     public static final String INVALID_BUCKING = "нельзя забронировать свою же вещь";
     public static final String SATE_ALREADY_SET_MESSAGE = "статус уже выставлен state: ";
     public static final String BOOKING_INVALID_MESSAGE = "недопустимые значения времени бронирования: ";
@@ -98,13 +98,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDetailedDto> findAllByBooker(String state, Long userId, int from, int size) {
-        State status = parseState(state);
+    public List<BookingDetailedDto> findAllByBooker(String stateValue, Long userId, int from, int size) {
         checkIfUserExists(userId);
+        State status = parseState(stateValue);
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;
-        Sort sort = Sort.by("start").descending();
-        Pageable pageable = PageRequest.of(from, size, sort);
+        Pageable pageable = PageRequest.of(from, size, SORT);
 
         switch (status) {
             case REJECTED :
@@ -137,12 +136,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDetailedDto> findAllByItemOwner(String stateValue, Long userId, int from, int size) {
-        State state = parseState(stateValue);
         checkIfUserExists(userId);
+        State state = parseState(stateValue);
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;
-        Sort sort = Sort.by("start").descending();
-        Pageable pageable = PageRequest.of(from, size, sort);
+        Pageable pageable = PageRequest.of(from, size, SORT);
 
         switch (state) {
             case REJECTED :

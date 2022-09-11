@@ -103,7 +103,8 @@ public class BookingServiceImpl implements BookingService {
         State status = parseState(stateValue);
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;
-        Pageable pageable = PageRequest.of(from, size, SORT);
+
+        Pageable pageable = PageRequest.of(from / size, size, SORT);
 
         switch (status) {
             case REJECTED :
@@ -140,7 +141,8 @@ public class BookingServiceImpl implements BookingService {
         State state = parseState(stateValue);
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;
-        Pageable pageable = PageRequest.of(from, size, SORT);
+
+        Pageable pageable = PageRequest.of(from / size, size, SORT);
 
         switch (state) {
             case REJECTED :

@@ -43,7 +43,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<RequestWithItemsDto> findAll(int from, int size, Long userId) {
         checkIfUserExists(userId);
-        Pageable pageable = PageRequest.of(from, size, SORT);
+        Pageable pageable = PageRequest.of(from / size, size, SORT);
         Page<Request> requests = requestRepository.findAll(userId, pageable);
         return RequestMapper.toRequestWithItemsDtoList(requests, itemRepository);
     }

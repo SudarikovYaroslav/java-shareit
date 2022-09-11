@@ -71,26 +71,21 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> findAllItems(@NotNull(message = NULL_USER_ID_MESSAGE)
-                                      @Min(MIN_VALUE)
                                       @RequestHeader(USER_ID_HEADER) Long userId,
-                                      @Positive
-                                      @Min(MIN_VALUE)
-                                      @RequestParam(defaultValue = DEFAULT_FROM_VALUE) int from,
-                                      @Positive
-                                      @Min(MIN_VALUE)
-                                      @RequestParam(defaultValue = DEFAULT_SIZE_VALUE) int size) {
+                                      @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                      @Min(MIN_VALUE) int from,
+                                      @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                      @Min(MIN_VALUE) int size) {
         return itemService.findAllItems(userId, from, size);
     }
 
     @GetMapping("/search")
     public List<ItemDto> findItemsByRequest(@RequestParam String text,
                                             @RequestHeader(USER_ID_HEADER) Long userId,
-                                            @Positive
-                                            @Min(MIN_VALUE)
-                                            @RequestParam(defaultValue = DEFAULT_FROM_VALUE) int from,
-                                            @Positive
-                                            @Min(MIN_VALUE)
-                                            @RequestParam(defaultValue = DEFAULT_SIZE_VALUE) int size) {
+                                            @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                            @Min(MIN_VALUE) int from,
+                                            @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                            @Min(MIN_VALUE) int size) {
         return itemService.findItemsByRequest(text, userId, from, size);
     }
 }

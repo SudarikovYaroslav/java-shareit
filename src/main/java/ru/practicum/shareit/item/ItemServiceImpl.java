@@ -91,7 +91,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> findAllItems(Long userId, int from, int size) {
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from / size, size);
         Page<Item> itemPage = itemRepository.findAll(userId, pageable);
         List<Item> userItems = itemPage.toList();
 
@@ -125,7 +125,7 @@ public class ItemServiceImpl implements ItemService {
             return new ArrayList<>();
         }
         List<ItemDto> result = new ArrayList<>();
-        Pageable pageable = PageRequest.of(from, size);
+        Pageable pageable = PageRequest.of(from / size, size);
         List<Item> foundItems = itemRepository.search(text, pageable).toList();
         fillItemDtoList(result, foundItems, userId);
         return result;

@@ -31,10 +31,8 @@ public class BookingControllerTest {
     public static final Long ID = 1L;
     public static final String FROM_VALUE = "0";
     public static final String SIZE_VALUE = "20";
-    public static final String TEXT_VALUE = "text";
     public static final String FROM_PARAM = "from";
     public static final String SIZE_PARAM = "size";
-    public static final String TEXT_PARAM = "text";
     public static final String STATE_VALUE = "ALL";
     public static final String STATE_PARAM = "state";
     public static final String APPROVED_VALUE = "true";

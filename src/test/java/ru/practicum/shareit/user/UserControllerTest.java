@@ -61,7 +61,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void findUserById() throws Exception {
+    public void findUserByIdTest() throws Exception {
         long userId = 1L;
         UserDto userDto = createTestUserDto(userId);
 
@@ -76,7 +76,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void updateUser() throws Exception {
+    public void updateUserTest() throws Exception {
         long userId = 1L;
         UserDto userDto = createTestUserDto(userId);
         userDto.setName("updatedName");
@@ -96,7 +96,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void deleteUserById() throws Exception {
+    public void deleteUserByIdTest() throws Exception {
         mvc.perform(delete("/users/1"))
                 .andExpect(status().isOk());
 

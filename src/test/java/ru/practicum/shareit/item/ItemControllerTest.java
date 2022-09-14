@@ -44,7 +44,7 @@ public class ItemControllerTest {
     private MockMvc mvc;
 
     @Test
-    public void createItem() throws Exception {
+    public void createItemTest() throws Exception {
         ItemDto inputDto = generateItemInputDto();
         ItemDto responseDto = generateItemResponseDto(ID, inputDto);
 
@@ -67,7 +67,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void createComment() throws Exception {
+    public void createCommentTest() throws Exception {
         CreateCommentDto inputCommentDto = new CreateCommentDto("text");
         DetailedCommentDto responseCommentDto = generateResponseCommentDto(ID, inputCommentDto);
 
@@ -91,7 +91,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void updateItem() throws Exception {
+    public void updateItemTest() throws Exception {
         ItemDto inputDto = generateItemInputDto();
         inputDto.setName("updatedName");
         ItemDto responseDto = generateItemResponseDto(ID, inputDto);
@@ -114,7 +114,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void findItemById() throws Exception {
+    public void findItemByIdTest() throws Exception {
         ItemDto responseDto = generateItemResponseDto(ID, generateItemInputDto());
 
         when(itemService.findItemById(any(Long.class), any(Long.class)))
@@ -129,7 +129,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void findAllItems() throws Exception {
+    public void findAllItemsTest() throws Exception {
         when(itemService.findAllItems(any(Long.class), any(Integer.class), any(Integer.class)))
                 .thenReturn(new ArrayList<>());
 
@@ -145,7 +145,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void findItemsByRequest() throws Exception {
+    public void findItemsByRequestTest() throws Exception {
         when(itemService.findItemsByRequest(any(String.class), any(Long.class), any(Integer.class), any(Integer.class)))
                 .thenReturn(new ArrayList<>());
 

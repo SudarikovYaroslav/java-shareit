@@ -181,7 +181,7 @@ public class BookingServiceImpl implements BookingService {
     private State parseState(String state) {
         State status;
         try {
-            status = State.valueOf(state);
+            status = State.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new UnsupportedStatusException(ILLEGAL_SATE_MESSAGE + state);
         }

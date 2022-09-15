@@ -20,8 +20,6 @@ import static org.mockito.Mockito.mock;
 public class RequestMapperTest {
 
     public static final long ID = 1L;
-    public static final int FROM_VALUE = 0;
-    public static final int SIZE_VALUE = 20;
     public static final LocalDateTime CREATED_DATE = LocalDateTime.now();
 
     private Request request;

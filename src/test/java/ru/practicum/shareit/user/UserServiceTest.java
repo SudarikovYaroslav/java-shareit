@@ -15,8 +15,8 @@ public class UserServiceTest {
 
     public static final long ID = 1L;
 
-    UserService userService;
-    UserRepository userRepository;
+    private UserService userService;
+    private UserRepository userRepository;
 
     private User user;
 

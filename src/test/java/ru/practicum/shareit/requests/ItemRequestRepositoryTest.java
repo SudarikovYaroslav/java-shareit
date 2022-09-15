@@ -50,7 +50,7 @@ public class ItemRequestRepositoryTest {
     }
 
     @Test
-    public void findAll() {
+    public void findAllTest() {
         Page<Request> result = itemRequestRepository.findAll(user1.getId(), Pageable.unpaged());
 
         assertNotNull(result);

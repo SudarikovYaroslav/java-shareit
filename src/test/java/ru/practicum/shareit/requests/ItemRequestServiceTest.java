@@ -36,7 +36,6 @@ public class ItemRequestServiceTest {
 
     private User user;
     private Request request;
-    //private RequestWithItemsDto responseDto;
 
     @BeforeEach
     public void beforeEach() {
@@ -50,7 +49,6 @@ public class ItemRequestServiceTest {
 
         request = new Request(ID, "description", ID, CREATED_DATE);
         user = new User(ID, "name", "user@emali.com");
-        //responseDto = new RequestWithItemsDto(ID, "description", CREATED_DATE, new ArrayList<>());
     }
 
     @Test

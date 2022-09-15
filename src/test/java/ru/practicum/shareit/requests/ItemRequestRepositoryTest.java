@@ -25,13 +25,12 @@ public class ItemRequestRepositoryTest {
     private UserRepository userRepository;
 
     private User user1;
-    private User user2;
     private Request request;
 
     @BeforeEach
     public void beforeEach() {
         user1 = userRepository.save(new User(null, "user 1", "user1@email.com"));
-        user2 = userRepository.save(new User(null, "user 2", "user2@email.com"));
+        User user2 = userRepository.save(new User(null, "user 2", "user2@email.com"));
         request = itemRequestRepository.save(new Request(
                 null,
                 "request",

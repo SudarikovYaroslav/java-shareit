@@ -22,10 +22,8 @@ public class ItemMapperTest {
     public static final LocalDateTime CREATED_DATE = LocalDateTime.now();
 
     private Item item;
-    private User user;
     private ItemDto itemDto;
     private Comment comment;
-    private Booking booking;
 
     @BeforeEach
     public void beforeEach() {
@@ -47,10 +45,10 @@ public class ItemMapperTest {
                 null,
                 ID + 1);
 
-        user = new User(ID, "name", "user@emali.com");
+        User user = new User(ID, "name", "user@emali.com");
         comment = new Comment(ID, "comment", item, user, CREATED_DATE);
 
-        booking = new Booking(ID,
+        Booking booking = new Booking(ID,
                 CREATED_DATE,
                 CREATED_DATE.plusDays(7),
                 item,
@@ -58,7 +56,6 @@ public class ItemMapperTest {
                 BookingStatus.APPROVED);
     }
 
-    // сразу 2
     @Test
     public void toDto() {
         ItemDto resultWithoutBookings = ItemMapper

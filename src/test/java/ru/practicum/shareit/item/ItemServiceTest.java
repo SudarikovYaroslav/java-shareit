@@ -163,7 +163,6 @@ public class ItemServiceTest {
 
     @Test
     public void findAllItemsTest() {
-
         when(itemRepository.findAll(any(Long.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(new ArrayList<>()));
 
@@ -174,7 +173,6 @@ public class ItemServiceTest {
 
     @Test
     public void findItemsByRequestTest() {
-
         when(itemRepository.search(any(String.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(new ArrayList<>()));
 

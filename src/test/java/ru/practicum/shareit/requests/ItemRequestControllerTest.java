@@ -44,7 +44,7 @@ public class ItemRequestControllerTest {
     private MockMvc mvc;
 
     @Test
-    public void createRequest() throws Exception {
+    public void createRequestTest() throws Exception {
         PostRequestDto requestDto = createPostRequestDto(TEST_DESCRIPTION);
         long requestId = 1;
         LocalDateTime creationDate = LocalDateTime.now();
@@ -68,7 +68,7 @@ public class ItemRequestControllerTest {
     }
 
     @Test
-    public void findAllByUserId() throws Exception {
+    public void findAllByUserIdTest() throws Exception {
         when(itemRequestService.findAllByUserId(any(Long.class)))
                 .thenReturn(Collections.emptyList());
 
@@ -81,7 +81,7 @@ public class ItemRequestControllerTest {
     }
 
     @Test
-    public void findAll() throws Exception {
+    public void findAllTest() throws Exception {
         when(itemRequestService.findAll(any(Integer.class), any(Integer.class), any(Long.class)))
                 .thenReturn(Collections.emptyList());
 
@@ -97,7 +97,7 @@ public class ItemRequestControllerTest {
     }
 
     @Test
-    public void findById() throws Exception {
+    public void findByIdTest() throws Exception {
         RequestWithItemsDto dto = new RequestWithItemsDto();
         dto.setId(1L);
         dto.setDescription("description");

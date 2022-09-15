@@ -78,5 +78,4 @@ public class RequestMapperTest {
         assertTrue(fromList.get(0).getItems().isEmpty());
         assertTrue(fromPage.get(0).getItems().isEmpty());
     }
-
 }

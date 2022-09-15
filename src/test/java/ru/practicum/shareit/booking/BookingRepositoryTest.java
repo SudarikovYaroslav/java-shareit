@@ -30,9 +30,9 @@ public class BookingRepositoryTest {
     @Autowired
     private ItemRepository itemRepository;
 
-    private User itemOwner;
-    private User booker;
     private Item item;
+    private User booker;
+    private User itemOwner;
     private Booking booking;
     private LocalDateTime end;
     private LocalDateTime start;

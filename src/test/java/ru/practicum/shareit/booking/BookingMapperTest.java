@@ -96,7 +96,7 @@ public class BookingMapperTest {
     }
 
     @Test
-    public void toListDetailedDto() {
+    public void toListDetailedDtoTest() {
         List<BookingDetailedDto> result = BookingMapper.toListDetailedDto(List.of(booking));
 
         assertNotNull(result);

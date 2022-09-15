@@ -8,9 +8,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
 import ru.practicum.shareit.requests.dto.PostRequestDto;
 import ru.practicum.shareit.requests.dto.PostResponseRequestDto;
+import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.util.List;

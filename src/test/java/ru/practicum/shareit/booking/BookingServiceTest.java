@@ -19,6 +19,7 @@ import ru.practicum.shareit.user.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,6 +91,18 @@ public class BookingServiceTest {
     }
 
     @Test
+    public void createBookingIllegalArgumentTest() {
+        LocalDateTime date = LocalDateTime.now();
+        bookingPostDto.setStart(date);
+        bookingPostDto.setEnd(date.minusDays(1));
+        Exception e = assertThrows(IllegalArgumentException.class,
+                () -> {
+                    bookingService.createBooking(bookingPostDto, ID);
+                });
+        assertNotNull(e);
+    }
+
+    @Test
     public void createUnavailableBooking() {
         item.setAvailable(false);
 
@@ -143,6 +156,40 @@ public class BookingServiceTest {
     }
 
     @Test
+    public void patchBookingNoSuchElementExceptionTest() {
+        booking.setStatus(BookingStatus.WAITING);
+        item.setOwner(ID);
+        when(bookingRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(booking));
+
+        when(itemRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(item));
+
+        Exception e = assertThrows(NoSuchElementException.class,
+                () -> {
+                    bookingService.patchBooking(ID, true, ID + 1);
+                });
+        assertNotNull(e);
+    }
+
+    @Test
+    public void patchBookingIllegalArgumentExceptionTest() {
+        booking.setStatus(BookingStatus.WAITING);
+        booking.setStatus(BookingStatus.APPROVED);
+        when(bookingRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(booking));
+
+        when(itemRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(item));
+
+        Exception e = assertThrows(IllegalArgumentException.class,
+                () -> {
+                    bookingService.patchBooking(ID, true, ID + 1);
+                });
+        assertNotNull(e);
+    }
+
+    @Test
     public void findByIdTest() {
         item.setOwner(owner.getId());
 
@@ -156,6 +203,22 @@ public class BookingServiceTest {
 
         assertNotNull(result);
         assertEquals(ID, result.getId());
+    }
+
+    @Test
+    public void findByIdNoSuchElementExceptionTest() {
+        user.setId(ID + 10);
+        when(userRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(user));
+
+        when(bookingRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(booking));
+
+        Exception e = assertThrows(NoSuchElementException.class,
+                () -> {
+                    bookingService.findById(ID, ID);
+                });
+        assertNotNull(e);
     }
 
     @Test

@@ -18,6 +18,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -102,7 +103,7 @@ public class BookingServiceImpl implements BookingService {
         checkIfUserExists(userId);
         State status = parseState(stateValue);
         LocalDateTime now = LocalDateTime.now();
-        List<Booking> bookings;
+        List<Booking> bookings = new ArrayList<>();
 
         Pageable pageable = PageRequest.of(from / size, size, SORT);
 
@@ -129,8 +130,6 @@ public class BookingServiceImpl implements BookingService {
             case ALL :
                 bookings = bookingRepository.findByBookerId(userId, pageable).toList();
                 break;
-            default :
-                throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);
         }
         return BookingMapper.toListDetailedDto(bookings);
     }
@@ -140,7 +139,7 @@ public class BookingServiceImpl implements BookingService {
         checkIfUserExists(userId);
         State state = parseState(stateValue);
         LocalDateTime now = LocalDateTime.now();
-        List<Booking> bookings;
+        List<Booking> bookings = new ArrayList<>();
 
         Pageable pageable = PageRequest.of(from / size, size, SORT);
 
@@ -168,8 +167,6 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository
                 .findBookingByItemOwner(userId, pageable).toList();
                 break;
-            default :
-                throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);
         }
         return BookingMapper.toListDetailedDto(bookings);
     }

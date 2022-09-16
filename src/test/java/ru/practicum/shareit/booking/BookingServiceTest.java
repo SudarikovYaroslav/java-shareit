@@ -8,6 +8,9 @@ import ru.practicum.shareit.booking.dto.BookingDetailedDto;
 import ru.practicum.shareit.booking.dto.BookingPostDto;
 import ru.practicum.shareit.booking.dto.BookingPostResponseDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
+import ru.practicum.shareit.exceptions.InvalidBookingException;
+import ru.practicum.shareit.exceptions.UnavailableBookingException;
+import ru.practicum.shareit.exceptions.UnsupportedStatusException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.User;
@@ -84,6 +87,39 @@ public class BookingServiceTest {
         assertEquals(bookingPostDto.getItemId(), result.getItem().getId());
         assertEquals(bookingPostDto.getStart(), result.getStart());
         assertEquals(bookingPostDto.getEnd(), result.getEnd());
+    }
+
+    @Test
+    public void createUnavailableBooking() {
+        item.setAvailable(false);
+
+        when(userRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(user));
+
+        when(itemRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(item));
+
+        UnavailableBookingException e = assertThrows(UnavailableBookingException.class,
+                () -> {
+                    bookingService.createBooking(bookingPostDto, ID);
+                });
+        assertNotNull(e);
+    }
+
+    @Test
+    public void createInvalidBookingTest() {
+        item.setOwner(user.getId());
+        when(userRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(user));
+
+        when(itemRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(item));
+
+        InvalidBookingException e = assertThrows(InvalidBookingException.class,
+                () -> {
+                    bookingService.createBooking(bookingPostDto, ID);
+                });
+        assertNotNull(e);
     }
 
     @Test
@@ -216,6 +252,23 @@ public class BookingServiceTest {
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
+    }
+
+    @Test
+    public void findAllByBookerUnsupportedStatus() {
+        when(userRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(user));
+
+        when(bookingRepository
+                .findByBookerId(any(Long.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(booking)));
+
+        UnsupportedStatusException e = assertThrows(UnsupportedStatusException.class,
+                () -> {
+                    bookingService
+                            .findAllByBooker("unsupported", ID, FROM_VALUE, SIZE_VALUE);
+                });
+        assertNotNull(e);
     }
 
     @Test

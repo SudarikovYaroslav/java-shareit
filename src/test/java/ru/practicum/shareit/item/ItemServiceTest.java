@@ -7,6 +7,9 @@ import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.exceptions.CommentException;
+import ru.practicum.shareit.exceptions.DeniedAccessException;
+import ru.practicum.shareit.exceptions.OwnerNotFoundException;
 import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.DetailedCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -104,6 +107,18 @@ public class ItemServiceTest {
     }
 
     @Test
+    public void createItemOwnerNotFoundTest() {
+        when(userRepository.findAll())
+                .thenReturn(Collections.emptyList());
+
+        OwnerNotFoundException e = assertThrows(OwnerNotFoundException.class,
+                () -> {
+                    itemService.createItem(itemDto, ID);
+                });
+        assertNotNull(e);
+    }
+
+    @Test
     public void createCommentTest() {
         when(itemRepository.findById(any(Long.class)))
                 .thenReturn(Optional.ofNullable(item));
@@ -126,6 +141,25 @@ public class ItemServiceTest {
     }
 
     @Test
+    public void createCommentExceptionTest() {
+        when(itemRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(item));
+
+        when(userRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(user));
+
+        when(bookingRepository
+                .findBookingsForAddComments(any(Long.class), any(Long.class), any(LocalDateTime.class)))
+                .thenReturn(Collections.emptyList());
+
+        CommentException result = assertThrows(CommentException.class, () -> {
+            itemService.createComment(createCommentDto, ID, ID);
+        });
+
+        assertNotNull(result);
+    }
+
+    @Test
     public void updateItemTest() {
         itemDto.setName("updatedName");
         item.setName("updatedName");
@@ -144,6 +178,24 @@ public class ItemServiceTest {
         assertNotNull(result);
         assertEquals(itemDto.getId(), result.getId());
         assertEquals(itemDto.getName(), result.getName());
+    }
+
+    @Test
+    public void updateItemDeniedExcessTest() {
+        item.setOwner(ID + 1);
+
+        when(commentRepository.findByItemId(any(Long.class)))
+                .thenReturn(new ArrayList<>());
+
+        when(itemRepository.findById(any(Long.class)))
+                .thenReturn(Optional.ofNullable(item));
+
+
+        DeniedAccessException exception = assertThrows(DeniedAccessException.class, () -> {
+            itemService.updateItem(itemDto, itemDto.getId(), user.getId());
+        });
+
+        assertNotNull(exception);
     }
 
     @Test
@@ -180,5 +232,31 @@ public class ItemServiceTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void findItemsByBlankRequest() {
+        List<ItemDto> result = itemService.findItemsByRequest("", ID, FROM_VALUE, SIZE_VALUE);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void findItemsByRequestSeveralRequestsTest() {
+        Item item2 = new Item(
+                null,
+                "item2",
+                "description",
+                true,
+                ID + 1,
+                null);
+        List<Item> items = List.of(item, item2);
+        when(itemRepository.search(any(String.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(items));
+
+        List<ItemDto> result = itemService.findItemsByRequest("description", ID, FROM_VALUE, SIZE_VALUE);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
     }
 }

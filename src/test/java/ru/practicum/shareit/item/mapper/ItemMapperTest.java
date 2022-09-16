@@ -101,5 +101,9 @@ public class ItemMapperTest {
         assertEquals(item.getId(), result.get(0).getId());
         assertEquals(item.getName(), result.get(0).getName());
         assertEquals(item.getDescription(), result.get(0).getDescription());
+        assertEquals(item.getAvailable(), result.get(0).getAvailable());
+        assertEquals(item.getRequestId(), result.get(0).getRequestId());
+        assertEquals(item.getOwner(), result.get(0).getOwner());
+
     }
 }

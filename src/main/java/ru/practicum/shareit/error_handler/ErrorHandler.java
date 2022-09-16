@@ -13,18 +13,6 @@ import java.util.NoSuchElementException;
 public class ErrorHandler {
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handle(EmailConflictException e) {
-        return new ErrorResponse("Адрес почты уже используется ", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handle(UserNotFoundException e) {
-        return new ErrorResponse("Недопустимое значение id ", e.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handle(OwnerNotFoundException e) {
         return new ErrorResponse("Не найден владелец вещи ", e.getMessage());
@@ -76,11 +64,5 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handle(CommentException e) {
         return new ErrorResponse("невозможно оставить комментарий 400: ", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handle(RequestNotFoundException e) {
-        return new ErrorResponse("запрос не найден 404: ", e.getMessage());
     }
 }

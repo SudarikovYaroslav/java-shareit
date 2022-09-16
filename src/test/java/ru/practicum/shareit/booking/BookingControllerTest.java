@@ -54,7 +54,7 @@ public class BookingControllerTest {
         BookingPostDto inputDto = generateInputDto();
         BookingPostResponseDto responseDto = generatePostResponseDto(ID, inputDto);
 
-        when (bookingService.createBooking(any(BookingPostDto.class), any(Long.class)))
+        when(bookingService.createBooking(any(BookingPostDto.class), any(Long.class)))
                 .thenReturn(responseDto);
 
         mvc.perform(post("/bookings")

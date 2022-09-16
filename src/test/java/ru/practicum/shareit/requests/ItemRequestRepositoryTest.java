@@ -24,37 +24,39 @@ public class ItemRequestRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    private User user1;
+    private User user;
+    private User requestor;
     private Request request;
 
     @BeforeEach
     public void beforeEach() {
-        user1 = userRepository.save(new User(null, "user 1", "user1@email.com"));
-        User user2 = userRepository.save(new User(null, "user 2", "user2@email.com"));
-        request = itemRequestRepository.save(new Request(
-                null,
-                "request",
-                user2.getId(),
-                LocalDateTime.now()));
+        LocalDateTime dateTime = LocalDateTime.now();
+        user = userRepository.save(new User(null, "user", "user@email.com"));
+        requestor = userRepository.save(new User(null, "requestor", "requestor@email.com"));
+        request = itemRequestRepository.save(new Request(null, "request", requestor.getId(), dateTime));
     }
 
     @Test
     public void findRequestByRequestorOrderByCreatedDescTest() {
         List<Request> result = itemRequestRepository
-                .findRequestByRequestorOrderByCreatedDesc(user1.getId());
+                .findRequestByRequestorOrderByCreatedDesc(requestor.getId());
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
-        assertEquals(request, result.get(0));
+        assertEquals(request.getDescription(), result.get(0).getDescription());
+        assertEquals(request.getRequestor(), result.get(0).getRequestor());
+        assertEquals(request.getCreated(), result.get(0).getCreated());
     }
 
     @Test
     public void findAllTest() {
-        Page<Request> result = itemRequestRepository.findAll(user1.getId(), Pageable.unpaged());
+        Page<Request> result = itemRequestRepository.findAll(user.getId(), Pageable.unpaged());
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
-        assertEquals(request, result.getContent().get(0));
+        assertEquals(request.getDescription(), result.getContent().get(0).getDescription());
+        assertEquals(request.getRequestor(), result.getContent().get(0).getRequestor());
+        assertEquals(request.getCreated(), result.getContent().get(0).getCreated());
     }
 
     @AfterEach

@@ -45,7 +45,8 @@ public class BookingController {
                                        @RequestHeader(USER_ID_HEADER) Long userId) {
         return bookingService.findById(bookingId, userId);
     }
-        @GetMapping
+
+    @GetMapping
     public List<BookingDetailedDto> findAllBookings(@RequestParam(defaultValue = DEFAULT_STATE_VALUE) String state,
                                                     @RequestHeader(USER_ID_HEADER) Long userId,
                                                     @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
@@ -62,6 +63,6 @@ public class BookingController {
                                             @Min(MIN_VALUE) int from,
                                             @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
                                             @PositiveOrZero int size) {
-        return bookingService.findAllByItemOwner(state, userId, from , size);
+        return bookingService.findAllByItemOwner(state, userId, from, size);
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.requests.ItemRequestRepository;
+import ru.practicum.shareit.requests.Request;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -25,35 +27,43 @@ public class CommentRepositoryTest {
     @Autowired
     private ItemRepository itemRepository;
 
-    private User user1;
-    private Item item1;
+    @Autowired
+    private ItemRequestRepository requestRepository;
+
+    private Item item;
+    private User itemOwner;
+    private User requestor;
     private Comment comment;
+    private Request request;
 
     @BeforeEach
     public void beforeEach() {
-        user1 = userRepository.save(new User(1L, "user 1", "user1@email.com"));
+        LocalDateTime date = LocalDateTime.now();
+        itemOwner = userRepository.save(new User(null, "itemOwner", "itemOwner@email.com"));
+        requestor = userRepository.save(new User(null, "requestor", "requestor@email.com"));
+        request = requestRepository.save(new Request(null, "description", requestor.getId(), date));
 
-        item1 = itemRepository.save(
-                new Item(1L,
-                        "item 1",
+        item = itemRepository.save(
+                new Item(null,
+                        "item",
                         "description",
                         true,
-                        user1.getId(),
+                        itemOwner.getId(),
                         null));
 
-        comment = commentRepository.save(new Comment(1L, "comment", item1, user1, LocalDateTime.now()));
+        comment = commentRepository.save(new Comment(null, "comment", item, itemOwner, LocalDateTime.now()));
     }
 
     @Test
     public void findByItemIdTest() {
-        List<Comment> result = commentRepository.findByItemId(1L);
+        List<Comment> result = commentRepository.findByItemId(item.getId());
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(comment.getId(), result.get(0).getId());
         assertEquals(comment.getText(), result.get(0).getText());
-        assertEquals(comment.getAuthor(), user1);
-        assertEquals(comment.getItem(), item1);
+        assertEquals(comment.getAuthor(), itemOwner);
+        assertEquals(comment.getItem(), item);
     }
 
     @AfterEach
@@ -61,5 +71,6 @@ public class CommentRepositoryTest {
         commentRepository.deleteAll();
         userRepository.deleteAll();
         itemRepository.deleteAll();
+        requestRepository.deleteAll();
     }
 }

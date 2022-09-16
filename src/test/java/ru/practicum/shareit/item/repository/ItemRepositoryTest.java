@@ -1,43 +1,55 @@
 package ru.practicum.shareit.item.repository;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.requests.ItemRequestRepository;
+import ru.practicum.shareit.requests.Request;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 public class ItemRepositoryTest {
 
     @Autowired
-    private ItemRepository itemRepository;
-
-    @Autowired
     private UserRepository userRepository;
-
-    private User user1;
-    private Item item1;
-
     @Autowired
-    public void beforeEach() {
-        user1 = userRepository.save(new User(1L, "user 1", "user1@email.com"));
+    private ItemRepository itemRepository;
+    @Autowired
+    private ItemRequestRepository requestRepository;
 
-        item1 = itemRepository.save(
-                new Item(1L,
-                "item 1",
+    private User itemOwner;
+    private Item item;
+    private Request request;
+
+    @BeforeEach
+    public void beforeEach() {
+        itemOwner = userRepository.save(new User(1L, "owner", "owner@email"));
+        User user = userRepository.save(new User(2L, "user", "user@email"));
+        item = itemRepository.save(new Item(
+                null,
+                "item",
                 "description",
                 true,
-                user1.getId(),
+                itemOwner.getId(),
                 null));
+
+        request = requestRepository.save(new Request(
+                null,
+                "description",
+                user.getId(),
+                LocalDateTime.now()
+        ));
     }
 
     @Test
@@ -45,35 +57,33 @@ public class ItemRepositoryTest {
         Page<Item> result = itemRepository.search("description", Pageable.unpaged());
 
         assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        Item founded = result.getContent().get(0);
-        assertEquals(founded.getId(), item1.getId());
-        assertEquals(founded.getName(), item1.getName());
-        assertEquals(founded.getDescription(), item1.getDescription());
+        assertFalse(result.isEmpty());
+        assertEquals(item, result.getContent().get(0));
     }
 
     @Test
     public void findAllTest() {
-        Page<Item> result = itemRepository.findAll(user1.getId(), Pageable.unpaged());
+        Page<Item> result = itemRepository.findAll(itemOwner.getId(), Pageable.unpaged());
 
         assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        Item founded = result.getContent().get(0);
-        assertEquals(founded.getId(), item1.getId());
-        assertEquals(founded.getName(), item1.getName());
-        assertEquals(founded.getDescription(), item1.getDescription());
+        assertFalse(result.isEmpty());
+        assertEquals(item.getOwner(), result.getContent().get(0).getOwner());
+        assertEquals(item.getName(), result.getContent().get(0).getName());
+        assertEquals(item.getDescription(), result.getContent().get(0).getDescription());
     }
 
     @Test
     public void findAllByRequestIdTest() {
-        List<Item> result = itemRepository.findAllByRequestId(1L);
+        List<Item> result = itemRepository.findAllByRequestId(request.getId());
+
         assertNotNull(result);
-        assertEquals(0, result.size());
+        assertTrue(result.isEmpty());
     }
 
     @AfterEach
     public void afterEach() {
-        itemRepository.deleteAll();
         userRepository.deleteAll();
+        itemRepository.deleteAll();
+        requestRepository.deleteAll();
     }
 }

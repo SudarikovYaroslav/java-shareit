@@ -98,8 +98,8 @@ public class BookingRepositoryTest {
 
     @Test
     public void findBookingByItemOwnerAndStatusTest() {
-        Page<Booking> result = bookingRepository.
-                findBookingByItemOwnerAndStatus(itemOwner.getId(), bookingStatus, Pageable.unpaged());
+        Page<Booking> result = bookingRepository
+                .findBookingByItemOwnerAndStatus(itemOwner.getId(), bookingStatus, Pageable.unpaged());
 
         assertNotNull(result);
         assertFalse(result.isEmpty());

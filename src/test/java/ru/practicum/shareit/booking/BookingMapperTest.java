@@ -45,8 +45,8 @@ public class BookingMapperTest {
         Booking result = BookingMapper.toModel(bookingPostDto, item, user);
 
         assertNotNull(result);
-        assertEquals( bookingPostDto.getStart(), result.getStart());
-        assertEquals( bookingPostDto.getEnd(), result.getEnd());
+        assertEquals(bookingPostDto.getStart(), result.getStart());
+        assertEquals(bookingPostDto.getEnd(), result.getEnd());
         assertEquals(item.getId(), result.getItem().getId());
         assertEquals(user.getId(), result.getBooker().getId());
     }

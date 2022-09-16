@@ -84,11 +84,11 @@ public class UserControllerTest {
         when(userService.updateUser(any(Long.class), any(UserDto.class)))
                 .thenReturn(userDto);
 
-        mvc.perform(patch("/users/1").
-                    content(mapper.writeValueAsString(userDto))
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON))
+        mvc.perform(patch("/users/1")
+                        .content(mapper.writeValueAsString(userDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(toJson(userDto)));
 

@@ -1,10 +1,11 @@
 package ru.practicum.shareit.booking;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDetailedDto;
 import ru.practicum.shareit.booking.dto.BookingPostDto;
 import ru.practicum.shareit.booking.dto.BookingPostResponseDto;
@@ -26,7 +27,8 @@ import static ru.practicum.shareit.booking.BookingStatus.REJECTED;
 import static ru.practicum.shareit.booking.BookingStatus.WAITING;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
 
     public static final String ILLEGAL_SATE_MESSAGE = "  state: ";
@@ -43,6 +45,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
 
     @Override
+    @Transactional
     public BookingPostResponseDto createBooking(BookingPostDto dto, Long userId) {
         if (!isStartBeforeEnd(dto)) {
             throw new IllegalArgumentException(BOOKING_INVALID_MESSAGE +
@@ -66,6 +69,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingResponseDto patchBooking(Long bookingId, Boolean approved, Long userId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         Item item = itemRepository.findById(booking.getItem().getId()).orElseThrow();

@@ -1,11 +1,12 @@
 package ru.practicum.shareit.requests;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.requests.dto.PostRequestDto;
@@ -16,7 +17,8 @@ import ru.practicum.shareit.user.UserRepository;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemRequestServiceImpl implements ItemRequestService {
 
     public static final Sort SORT = Sort.by("created").descending();
@@ -26,6 +28,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository requestRepository;
 
     @Override
+    @Transactional
     public PostResponseRequestDto createRequest(PostRequestDto dto, Long userId) {
         checkIfUserExists(userId);
         Request request  = RequestMapper.toModel(dto, userId);

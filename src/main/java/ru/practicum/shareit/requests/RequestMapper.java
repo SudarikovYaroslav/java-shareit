@@ -1,5 +1,7 @@
 package ru.practicum.shareit.requests;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemInRequestDto;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestMapper {
 
     public static Request toModel(PostRequestDto dto, Long requestor) {

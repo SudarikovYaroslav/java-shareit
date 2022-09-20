@@ -18,7 +18,9 @@ import java.util.List;
 @RequestMapping(path = "/items")
 public class ItemController {
 
-    public static final int MIN_ID_VALUE = 1;
+    public static final int MIN_VALUE = 1;
+    public static final String DEFAULT_FROM_VALUE = "0";
+    public static final String DEFAULT_SIZE_VALUE = "20";
     public static final String USER_ID_HEADER = "X-Sharer-User-Id";
     public static final String NULL_ITEM_ID_MESSAGE = "itemID is null";
     public static final String NULL_USER_ID_MESSAGE = "userID is null";
@@ -29,19 +31,20 @@ public class ItemController {
     public ItemDto createItem(@Validated({Create.class})
                               @RequestBody ItemDto itemDto,
                               @NotNull(message = (NULL_ITEM_ID_MESSAGE))
-                              @Min(MIN_ID_VALUE)
+                              @Min(MIN_VALUE)
                               @RequestHeader(USER_ID_HEADER) Long userId) {
         return itemService.createItem(itemDto, userId);
     }
 
     @PostMapping("/{itemId}/comment")
-    public DetailedCommentDto createComment(@Validated({Update.class}) @RequestBody CreateCommentDto commentDto,
+    public DetailedCommentDto createComment(@Validated({Update.class})
+                                            @RequestBody CreateCommentDto commentDto,
                                             @NotNull(message = (NULL_ITEM_ID_MESSAGE))
-                                 @Min(MIN_ID_VALUE)
-                                 @PathVariable Long itemId,
+                                            @Min(MIN_VALUE)
+                                            @PathVariable Long itemId,
                                             @NotNull(message = (NULL_USER_ID_MESSAGE))
-                                 @Min(MIN_ID_VALUE)
-                                 @RequestHeader(USER_ID_HEADER) Long userId) {
+                                            @Min(MIN_VALUE)
+                                            @RequestHeader(USER_ID_HEADER) Long userId) {
         return itemService.createComment(commentDto, itemId, userId);
     }
 
@@ -49,17 +52,17 @@ public class ItemController {
     public ItemDto updateItem(@Validated({Update.class})
                               @RequestBody ItemDto itemDto,
                               @NotNull(message = NULL_ITEM_ID_MESSAGE)
-                              @Min(MIN_ID_VALUE)
+                              @Min(MIN_VALUE)
                               @PathVariable Long itemId,
                               @NotNull(message = NULL_USER_ID_MESSAGE)
-                              @Min(MIN_ID_VALUE)
+                              @Min(MIN_VALUE)
                               @RequestHeader(USER_ID_HEADER) Long userId) {
         return itemService.updateItem(itemDto, itemId, userId);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto findItemById(@NotNull(message = NULL_ITEM_ID_MESSAGE)
-                                @Min(MIN_ID_VALUE)
+                                @Min(MIN_VALUE)
                                 @PathVariable Long itemId,
                                 @RequestHeader(USER_ID_HEADER) Long userId) {
         return itemService.findItemById(itemId, userId);
@@ -67,14 +70,21 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> findAllItems(@NotNull(message = NULL_USER_ID_MESSAGE)
-                                      @Min(MIN_ID_VALUE)
-                                      @RequestHeader(USER_ID_HEADER) Long userId) {
-        return itemService.findAllItems(userId);
+                                      @RequestHeader(USER_ID_HEADER) Long userId,
+                                      @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                      @Min(MIN_VALUE) int from,
+                                      @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                      @Min(MIN_VALUE) int size) {
+        return itemService.findAllItems(userId, from, size);
     }
 
     @GetMapping("/search")
     public List<ItemDto> findItemsByRequest(@RequestParam String text,
-                                            @RequestHeader(USER_ID_HEADER) Long userId) {
-        return itemService.findItemsByRequest(text, userId);
+                                            @RequestHeader(USER_ID_HEADER) Long userId,
+                                            @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                            @Min(MIN_VALUE) int from,
+                                            @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                            @Min(MIN_VALUE) int size) {
+        return itemService.findItemsByRequest(text, userId, from, size);
     }
 }

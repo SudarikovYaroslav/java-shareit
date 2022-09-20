@@ -9,13 +9,19 @@ import ru.practicum.shareit.booking.dto.BookingPostResponseDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.validation_markers.Create;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
+@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping(path = "/bookings")
 public class BookingController {
 
+    public static final int MIN_VALUE = 0;
+    public static final String DEFAULT_FROM_VALUE = "0";
+    public static final String DEFAULT_SIZE_VALUE = "20";
     public static final String DEFAULT_STATE_VALUE = "ALL";
     public static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
@@ -42,13 +48,21 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDetailedDto> findAllBookings(@RequestParam(defaultValue = DEFAULT_STATE_VALUE) String state,
-                                                    @RequestHeader(USER_ID_HEADER) Long userId) {
-        return bookingService.findAllByBooker(state, userId);
+                                                    @RequestHeader(USER_ID_HEADER) Long userId,
+                                                    @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                                    @Min(MIN_VALUE) int from,
+                                                    @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                                    @PositiveOrZero int size) {
+        return bookingService.findAllByBooker(state, userId, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingDetailedDto> findAll(@RequestParam(defaultValue = DEFAULT_STATE_VALUE) String state,
-                                            @RequestHeader(USER_ID_HEADER) Long userId) {
-        return bookingService.findAllByItemOwner(state, userId);
+                                            @RequestHeader(USER_ID_HEADER) Long userId,
+                                            @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                            @Min(MIN_VALUE) int from,
+                                            @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                            @PositiveOrZero int size) {
+        return bookingService.findAllByItemOwner(state, userId, from, size);
     }
 }

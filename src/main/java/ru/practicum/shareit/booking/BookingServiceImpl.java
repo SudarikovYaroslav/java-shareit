@@ -1,8 +1,11 @@
 package ru.practicum.shareit.booking;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDetailedDto;
 import ru.practicum.shareit.booking.dto.BookingPostDto;
 import ru.practicum.shareit.booking.dto.BookingPostResponseDto;
@@ -16,18 +19,20 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static ru.practicum.shareit.booking.BookingStatus.REJECTED;
 import static ru.practicum.shareit.booking.BookingStatus.WAITING;
-import static ru.practicum.shareit.booking.State.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
 
     public static final String ILLEGAL_SATE_MESSAGE = "  state: ";
+    public static final Sort SORT = Sort.by("start").descending();
     public static final String INVALID_BUCKING = "нельзя забронировать свою же вещь";
     public static final String SATE_ALREADY_SET_MESSAGE = "статус уже выставлен state: ";
     public static final String BOOKING_INVALID_MESSAGE = "недопустимые значения времени бронирования: ";
@@ -40,6 +45,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
 
     @Override
+    @Transactional
     public BookingPostResponseDto createBooking(BookingPostDto dto, Long userId) {
         if (!isStartBeforeEnd(dto)) {
             throw new IllegalArgumentException(BOOKING_INVALID_MESSAGE +
@@ -63,6 +69,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingResponseDto patchBooking(Long bookingId, Boolean approved, Long userId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         Item item = itemRepository.findById(booking.getItem().getId()).orElseThrow();
@@ -96,76 +103,74 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDetailedDto> findAllByBooker(String state, Long userId) {
-        State status = parseState(state);
+    public List<BookingDetailedDto> findAllByBooker(String stateValue, Long userId, int from, int size) {
         checkIfUserExists(userId);
+        State status = parseState(stateValue);
         LocalDateTime now = LocalDateTime.now();
-        List<Booking> bookings;
-        Sort sort = Sort.by("start").descending();
+        List<Booking> bookings = new ArrayList<>();
+
+        Pageable pageable = PageRequest.of(from / size, size, SORT);
 
         switch (status) {
             case REJECTED :
                 bookings = bookingRepository
-                .findByBookerIdAndStatus(userId, REJECTED, sort);
+                .findByBookerIdAndStatus(userId, REJECTED, pageable).toList();
                 break;
             case WAITING :
                 bookings = bookingRepository
-                .findByBookerIdAndStatus(userId, WAITING, sort);
+                .findByBookerIdAndStatus(userId, WAITING, pageable).toList();
                 break;
             case CURRENT :
-                bookings = bookingRepository.findByBookerIdCurrent(userId, now);
+                bookings = bookingRepository.findByBookerIdCurrent(userId, now, pageable).toList();
                 break;
             case FUTURE :
                 bookings = bookingRepository
-                .findByBookerIdAndStartIsAfter(userId, now, sort);
+                .findByBookerIdAndStartIsAfter(userId, now, pageable).toList();
                 break;
             case PAST :
                 bookings = bookingRepository
-                .findByBookerIdAndEndIsBefore(userId, now, sort);
+                .findByBookerIdAndEndIsBefore(userId, now, pageable).toList();
                 break;
             case ALL :
-                bookings = bookingRepository.findByBookerId(userId, sort);
+                bookings = bookingRepository.findByBookerId(userId, pageable).toList();
                 break;
-            default :
-                throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);
         }
         return BookingMapper.toListDetailedDto(bookings);
     }
 
     @Override
-    public List<BookingDetailedDto> findAllByItemOwner(String stateValue, Long userId) {
-        State state = parseState(stateValue);
+    public List<BookingDetailedDto> findAllByItemOwner(String stateValue, Long userId, int from, int size) {
         checkIfUserExists(userId);
+        State state = parseState(stateValue);
         LocalDateTime now = LocalDateTime.now();
-        List<Booking> bookings;
-        Sort sort = Sort.by("start").descending();
+        List<Booking> bookings = new ArrayList<>();
+
+        Pageable pageable = PageRequest.of(from / size, size, SORT);
 
         switch (state) {
             case REJECTED :
                 bookings = bookingRepository
-                .findBookingByItemOwnerAndStatus(userId, REJECTED, sort);
+                .findBookingByItemOwnerAndStatus(userId, REJECTED, pageable).toList();
                 break;
             case WAITING :
                 bookings = bookingRepository
-                .findBookingByItemOwnerAndStatus(userId, WAITING, sort);
+                .findBookingByItemOwnerAndStatus(userId, WAITING, pageable).toList();
                 break;
             case CURRENT :
-                bookings = bookingRepository.findBookingsByItemOwnerCurrent(userId, now);
+                bookings = bookingRepository.findBookingsByItemOwnerCurrent(userId, now, pageable).toList();
                 break;
             case FUTURE :
                 bookings = bookingRepository
-                .findBookingByItemOwnerAndStartIsAfter(userId, now, sort);
+                .findBookingByItemOwnerAndStartIsAfter(userId, now, pageable).toList();
                 break;
             case PAST :
                 bookings = bookingRepository
-                .findBookingByItemOwnerAndEndIsBefore(userId, now, sort);
+                .findBookingByItemOwnerAndEndIsBefore(userId, now, pageable).toList();
                 break;
             case ALL :
                 bookings = bookingRepository
-                .findBookingByItemOwner(userId, sort);
+                .findBookingByItemOwner(userId, pageable).toList();
                 break;
-            default :
-                throw new IllegalArgumentException(ILLEGAL_SATE_MESSAGE);
         }
         return BookingMapper.toListDetailedDto(bookings);
     }
@@ -177,7 +182,7 @@ public class BookingServiceImpl implements BookingService {
     private State parseState(String state) {
         State status;
         try {
-            status = State.valueOf(state);
+            status = State.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new UnsupportedStatusException(ILLEGAL_SATE_MESSAGE + state);
         }

@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.requests.dto.PostRequestDto;
-import ru.practicum.shareit.requests.dto.PostResponseRequestDto;
-import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
+import ru.practicum.shareit.request.dto.PostRequestDto;
+import ru.practicum.shareit.request.dto.PostResponseRequestDto;
+import ru.practicum.shareit.request.dto.RequestWithItemsDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

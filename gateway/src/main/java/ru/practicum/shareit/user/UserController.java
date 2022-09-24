@@ -1,55 +1,67 @@
 package ru.practicum.shareit.user;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.validation_markers.Create;
 import ru.practicum.shareit.validation_markers.Update;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
+@Slf4j
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(path = "/users")
 public class UserController {
 
     public static final int MIN_ID_VALUE = 1;
     public static final String NULL_USER_ID_MESSAGE = "userID is null";
 
-    private final UserService userService;
+    private final UserClient userClient;
 
+    //UserDto
     @PostMapping
-    public UserDto createUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
-        return userService.createUser(userDto);
+    public ResponseEntity<Object> createUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
+        log.info("Creating user {}", userDto);
+        return userClient.createUser(userDto);
     }
 
+    //UserDto
     @GetMapping("/{userId}")
-    public UserDto findUserById(@NotNull(message = (NULL_USER_ID_MESSAGE))
+    public ResponseEntity<Object> findUserById(@NotNull(message = (NULL_USER_ID_MESSAGE))
                                 @Min(MIN_ID_VALUE)
                                 @PathVariable Long userId) {
-        return userService.findUserById(userId);
+        log.info("Searching userId={}", userId);
+        return userClient.findUserById(userId);
     }
 
+    //List<UserDto>
     @GetMapping
-    public List<UserDto> findAllUsers() {
-        return userService.findAllUsers();
+    public ResponseEntity<Object> findAllUsers() {
+        log.info("Searching all users");
+        return userClient.findAllUsers();
     }
 
+    //UserDto
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@NotNull(message = NULL_USER_ID_MESSAGE)
+    public ResponseEntity<Object> updateUser(@NotNull(message = NULL_USER_ID_MESSAGE)
                               @Min(MIN_ID_VALUE)
                               @PathVariable Long userId,
                               @Validated({Update.class})
                               @RequestBody UserDto userDto) {
-        return userService.updateUser(userId, userDto);
+        log.info("Updating userId={}, user {}", userId, userDto);
+        return userClient.updateUser(userId, userDto);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUserById(@NotNull(message = (NULL_USER_ID_MESSAGE))
                                @Min(MIN_ID_VALUE)
                                @PathVariable Long userId) {
-        userService.deleteUserById(userId);
+        log.info("Deleting userId={}", userId);
+        userClient.deleteUserById(userId);
     }
 }

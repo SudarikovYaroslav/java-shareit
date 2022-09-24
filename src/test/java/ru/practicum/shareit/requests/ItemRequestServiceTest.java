@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.requests.dto.PostRequestDto;
-import ru.practicum.shareit.requests.dto.PostResponseRequestDto;
-import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
+import ru.practicum.shareit.request.dto.PostRequestDto;
+import ru.practicum.shareit.request.dto.PostResponseRequestDto;
+import ru.practicum.shareit.request.dto.RequestWithItemsDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 

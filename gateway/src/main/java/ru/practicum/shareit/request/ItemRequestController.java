@@ -1,20 +1,18 @@
-package ru.practicum.shareit.requests;
+package ru.practicum.shareit.request;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.requests.dto.PostRequestDto;
-import ru.practicum.shareit.requests.dto.PostResponseRequestDto;
-import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
+import ru.practicum.shareit.request.dto.PostRequestDto;
 import ru.practicum.shareit.validation_markers.Create;
 
 import javax.validation.constraints.Min;
-import java.util.List;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/requests")
-@AllArgsConstructor
 public class ItemRequestController {
 
     public static final int MIN_VALUE = 0;
@@ -22,32 +20,36 @@ public class ItemRequestController {
     public static final String DEFAULT_SIZE_VALUE = "20";
     public static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
-    private final ItemRequestService service;
+    private final RequestClient requestClient;
 
+    //PostResponseRequestDto
     @PostMapping
-    public PostResponseRequestDto createRequest(@Validated({Create.class})
+    public ResponseEntity<Object> createRequest(@Validated({Create.class})
                                                 @RequestBody PostRequestDto postRequestDto,
                                                 @RequestHeader(USER_ID_HEADER) Long userId) {
-        return service.createRequest(postRequestDto, userId);
+        return requestClient.createRequest(postRequestDto, userId);
     }
 
+    //List<RequestWithItemsDto>
     @GetMapping
-    public List<RequestWithItemsDto> findAllByUserId(@RequestHeader(USER_ID_HEADER) Long userId) {
-        return service.findAllByUserId(userId);
+    public ResponseEntity<Object> findAllByUserId(@RequestHeader(USER_ID_HEADER) Long userId) {
+        return requestClient.findAllByUserId(userId);
     }
 
+    //List<RequestWithItemsDto>
     @GetMapping ("/all")
-    public List<RequestWithItemsDto> findAll(@RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+    public ResponseEntity<Object> findAll(@RequestParam(defaultValue = DEFAULT_FROM_VALUE)
                                              @Min(MIN_VALUE) int from,
                                              @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
                                              @Min(MIN_VALUE) int size,
                                              @RequestHeader(USER_ID_HEADER) Long userId) {
-        return service.findAll(from, size, userId);
+        return requestClient.findAll(from, size, userId);
     }
 
+    //RequestWithItemsDto
     @GetMapping("/{requestId}")
-    public RequestWithItemsDto findById(@PathVariable Long requestId,
+    public ResponseEntity<Object> findById(@PathVariable Long requestId,
                                         @RequestHeader(USER_ID_HEADER) Long userId) {
-        return service.findById(requestId, userId);
+        return requestClient.findById(requestId, userId);
     }
 }

@@ -1,17 +1,16 @@
 package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CreateCommentDto;
-import ru.practicum.shareit.item.dto.DetailedCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.validation_markers.Create;
 import ru.practicum.shareit.validation_markers.Update;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -25,19 +24,21 @@ public class ItemController {
     public static final String NULL_ITEM_ID_MESSAGE = "itemID is null";
     public static final String NULL_USER_ID_MESSAGE = "userID is null";
 
-    private final ItemService itemService;
+    private final ItemClient itemClient;
 
+    //ItemDto
     @PostMapping
-    public ItemDto createItem(@Validated({Create.class})
+    public ResponseEntity<Object> createItem(@Validated({Create.class})
                               @RequestBody ItemDto itemDto,
                               @NotNull(message = (NULL_ITEM_ID_MESSAGE))
                               @Min(MIN_VALUE)
                               @RequestHeader(USER_ID_HEADER) Long userId) {
-        return itemService.createItem(itemDto, userId);
+        return itemClient.createItem(itemDto, userId);
     }
 
+    //DetailedCommentDto
     @PostMapping("/{itemId}/comment")
-    public DetailedCommentDto createComment(@Validated({Update.class})
+    public ResponseEntity<Object> createComment(@Validated({Update.class})
                                             @RequestBody CreateCommentDto commentDto,
                                             @NotNull(message = (NULL_ITEM_ID_MESSAGE))
                                             @Min(MIN_VALUE)
@@ -45,11 +46,12 @@ public class ItemController {
                                             @NotNull(message = (NULL_USER_ID_MESSAGE))
                                             @Min(MIN_VALUE)
                                             @RequestHeader(USER_ID_HEADER) Long userId) {
-        return itemService.createComment(commentDto, itemId, userId);
+        return itemClient.createComment(commentDto, itemId, userId);
     }
 
+    //ItemDto
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@Validated({Update.class})
+    public ResponseEntity<Object> updateItem(@Validated({Update.class})
                               @RequestBody ItemDto itemDto,
                               @NotNull(message = NULL_ITEM_ID_MESSAGE)
                               @Min(MIN_VALUE)
@@ -57,34 +59,37 @@ public class ItemController {
                               @NotNull(message = NULL_USER_ID_MESSAGE)
                               @Min(MIN_VALUE)
                               @RequestHeader(USER_ID_HEADER) Long userId) {
-        return itemService.updateItem(itemDto, itemId, userId);
+        return itemClient.updateItem(itemDto, itemId, userId);
     }
 
+    //ItemDto
     @GetMapping("/{itemId}")
-    public ItemDto findItemById(@NotNull(message = NULL_ITEM_ID_MESSAGE)
+    public ResponseEntity<Object> findItemById(@NotNull(message = NULL_ITEM_ID_MESSAGE)
                                 @Min(MIN_VALUE)
                                 @PathVariable Long itemId,
                                 @RequestHeader(USER_ID_HEADER) Long userId) {
-        return itemService.findItemById(itemId, userId);
+        return itemClient.findItemById(itemId, userId);
     }
 
+    //List<ItemDto>
     @GetMapping
-    public List<ItemDto> findAllItems(@NotNull(message = NULL_USER_ID_MESSAGE)
+    public ResponseEntity<Object> findAllItems(@NotNull(message = NULL_USER_ID_MESSAGE)
                                       @RequestHeader(USER_ID_HEADER) Long userId,
                                       @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
                                       @Min(MIN_VALUE) int from,
                                       @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
                                       @Min(MIN_VALUE) int size) {
-        return itemService.findAllItems(userId, from, size);
+        return itemClient.findAllItems(userId, from, size);
     }
 
+    //List<ItemDto>
     @GetMapping("/search")
-    public List<ItemDto> findItemsByRequest(@RequestParam String text,
-                                            @RequestHeader(USER_ID_HEADER) Long userId,
-                                            @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
-                                            @Min(MIN_VALUE) int from,
-                                            @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
-                                            @Min(MIN_VALUE) int size) {
-        return itemService.findItemsByRequest(text, userId, from, size);
+    public ResponseEntity<Object> findItemsByRequest(@RequestParam String text,
+                                                     @RequestHeader(USER_ID_HEADER) Long userId,
+                                                     @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                                     @Min(MIN_VALUE) int from,
+                                                     @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                                     @Min(MIN_VALUE) int size) {
+        return itemClient.findItemsByRequest(text, userId, from, size);
     }
 }

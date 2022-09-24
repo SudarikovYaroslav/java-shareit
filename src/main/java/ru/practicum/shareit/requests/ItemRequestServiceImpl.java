@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.requests.dto.PostRequestDto;
-import ru.practicum.shareit.requests.dto.PostResponseRequestDto;
-import ru.practicum.shareit.requests.dto.RequestWithItemsDto;
+import ru.practicum.shareit.request.dto.PostRequestDto;
+import ru.practicum.shareit.request.dto.PostResponseRequestDto;
+import ru.practicum.shareit.request.dto.RequestWithItemsDto;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.util.List;

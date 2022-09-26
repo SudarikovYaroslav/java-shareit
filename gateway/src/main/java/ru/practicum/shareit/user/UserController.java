@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.validation_markers.Create;
 import ru.practicum.shareit.validation_markers.Update;
 
@@ -23,14 +22,12 @@ public class UserController {
 
     private final UserClient userClient;
 
-    //UserDto
     @PostMapping
     public ResponseEntity<Object> createUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
         log.info("Creating user {}", userDto);
         return userClient.createUser(userDto);
     }
 
-    //UserDto
     @GetMapping("/{userId}")
     public ResponseEntity<Object> findUserById(@NotNull(message = (NULL_USER_ID_MESSAGE))
                                 @Min(MIN_ID_VALUE)
@@ -39,14 +36,12 @@ public class UserController {
         return userClient.findUserById(userId);
     }
 
-    //List<UserDto>
     @GetMapping
     public ResponseEntity<Object> findAllUsers() {
         log.info("Searching all users");
         return userClient.findAllUsers();
     }
 
-    //UserDto
     @PatchMapping("/{userId}")
     public ResponseEntity<Object> updateUser(@NotNull(message = NULL_USER_ID_MESSAGE)
                               @Min(MIN_ID_VALUE)

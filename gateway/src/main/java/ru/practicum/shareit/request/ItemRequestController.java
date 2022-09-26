@@ -22,7 +22,6 @@ public class ItemRequestController {
 
     private final RequestClient requestClient;
 
-    //PostResponseRequestDto
     @PostMapping
     public ResponseEntity<Object> createRequest(@Validated({Create.class})
                                                 @RequestBody PostRequestDto postRequestDto,
@@ -30,26 +29,23 @@ public class ItemRequestController {
         return requestClient.createRequest(postRequestDto, userId);
     }
 
-    //List<RequestWithItemsDto>
     @GetMapping
     public ResponseEntity<Object> findAllByUserId(@RequestHeader(USER_ID_HEADER) Long userId) {
         return requestClient.findAllByUserId(userId);
     }
 
-    //List<RequestWithItemsDto>
     @GetMapping ("/all")
     public ResponseEntity<Object> findAll(@RequestParam(defaultValue = DEFAULT_FROM_VALUE)
-                                             @Min(MIN_VALUE) int from,
-                                             @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
-                                             @Min(MIN_VALUE) int size,
-                                             @RequestHeader(USER_ID_HEADER) Long userId) {
+                                          @Min(MIN_VALUE) int from,
+                                          @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                          @Min(MIN_VALUE) int size,
+                                          @RequestHeader(USER_ID_HEADER) Long userId) {
         return requestClient.findAll(from, size, userId);
     }
 
-    //RequestWithItemsDto
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> findById(@PathVariable Long requestId,
-                                        @RequestHeader(USER_ID_HEADER) Long userId) {
+                                           @RequestHeader(USER_ID_HEADER) Long userId) {
         return requestClient.findById(requestId, userId);
     }
 }

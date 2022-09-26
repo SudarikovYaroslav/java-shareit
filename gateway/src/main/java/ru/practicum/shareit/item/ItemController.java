@@ -26,7 +26,6 @@ public class ItemController {
 
     private final ItemClient itemClient;
 
-    //ItemDto
     @PostMapping
     public ResponseEntity<Object> createItem(@Validated({Create.class})
                               @RequestBody ItemDto itemDto,
@@ -36,7 +35,6 @@ public class ItemController {
         return itemClient.createItem(itemDto, userId);
     }
 
-    //DetailedCommentDto
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> createComment(@Validated({Update.class})
                                             @RequestBody CreateCommentDto commentDto,
@@ -49,7 +47,6 @@ public class ItemController {
         return itemClient.createComment(commentDto, itemId, userId);
     }
 
-    //ItemDto
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> updateItem(@Validated({Update.class})
                               @RequestBody ItemDto itemDto,
@@ -62,7 +59,6 @@ public class ItemController {
         return itemClient.updateItem(itemDto, itemId, userId);
     }
 
-    //ItemDto
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> findItemById(@NotNull(message = NULL_ITEM_ID_MESSAGE)
                                 @Min(MIN_VALUE)
@@ -71,7 +67,6 @@ public class ItemController {
         return itemClient.findItemById(itemId, userId);
     }
 
-    //List<ItemDto>
     @GetMapping
     public ResponseEntity<Object> findAllItems(@NotNull(message = NULL_USER_ID_MESSAGE)
                                       @RequestHeader(USER_ID_HEADER) Long userId,
@@ -82,7 +77,6 @@ public class ItemController {
         return itemClient.findAllItems(userId, from, size);
     }
 
-    //List<ItemDto>
     @GetMapping("/search")
     public ResponseEntity<Object> findItemsByRequest(@RequestParam String text,
                                                      @RequestHeader(USER_ID_HEADER) Long userId,

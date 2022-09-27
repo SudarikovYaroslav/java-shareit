@@ -2,6 +2,7 @@ package ru.practicum.shareit.error_handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,13 +28,6 @@ public class ErrorHandler {
         return new ErrorResponse("Отказано в доступе ", e.getMessage());
     }
 
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ErrorResponse handle(MethodArgumentNotValidException e) {
-//        log.warn("Ошибка валидации", e);
-//        return new ErrorResponse("Ошибка валидации 400: ", e.getMessage());
-//    }
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handle(NoSuchElementException e) {
@@ -47,13 +41,6 @@ public class ErrorHandler {
         log.warn("Ошибка бронирования", e);
         return new ErrorResponse("Ошибка бронирования 400: ", e.getMessage());
     }
-
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ErrorResponse handle(IllegalArgumentException e) {
-//        log.warn("Недопустимое значение", e);
-//        return new ErrorResponse("Передано недопустимое значение 400: ", e.getMessage());
-//    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -74,6 +61,20 @@ public class ErrorHandler {
     public ErrorResponse handle(CommentException e) {
         log.warn("Ошибка комментария", e);
         return new ErrorResponse("невозможно оставить комментарий 400: ", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handle(MethodArgumentNotValidException e) {
+        log.warn("Ошибка валидации", e);
+        return new ErrorResponse("Ошибка валидации 400: ", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handle(IllegalArgumentException e) {
+        log.warn("Недопустимое значение", e);
+        return new ErrorResponse("Передано недопустимое значение 400: ", e.getMessage());
     }
 
     @ExceptionHandler

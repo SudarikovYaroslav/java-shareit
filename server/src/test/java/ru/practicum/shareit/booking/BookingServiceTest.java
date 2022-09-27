@@ -92,18 +92,6 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void createBookingIllegalArgumentTest() {
-        LocalDateTime date = LocalDateTime.now();
-        bookingPostDto.setStart(date);
-        bookingPostDto.setEnd(date.minusDays(1));
-        Exception e = assertThrows(IllegalArgumentException.class,
-                () -> {
-                    bookingService.createBooking(bookingPostDto, ID);
-                });
-        assertNotNull(e);
-    }
-
-    @Test
     public void createUnavailableBooking() {
         item.setAvailable(false);
 

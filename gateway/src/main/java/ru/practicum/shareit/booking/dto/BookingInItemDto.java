@@ -3,7 +3,9 @@ package ru.practicum.shareit.booking.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.practicum.shareit.validation_markers.Create;
 
+import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 public class BookingInItemDto {
     private Long id;
     private Long bookerId;
+    @FutureOrPresent(groups = {Create.class})
     private LocalDateTime start;
+    @FutureOrPresent(groups = {Create.class})
     private LocalDateTime end;
 }

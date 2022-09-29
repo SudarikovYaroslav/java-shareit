@@ -24,4 +24,11 @@ public class ErrorHandler {
         log.warn("Недопустимое значение", e);
         return new ErrorResponse("Передано недопустимое значение 400: ", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handle(Throwable e) {
+        log.warn("Непредвиденная ошибка сервера", e);
+        return new ErrorResponse("непредвиденная ошибка сервера 500: ", e.getMessage());
+    }
 }
